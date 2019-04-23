@@ -31,7 +31,6 @@
 <nav class="navbar navbar-inverse navbar-static-top">
 	<div class="container-fluid">
         	<div class="navbar-header">
-            		<a class="navbar-brand" href="direct_floods_form.php">SENSS</a>
         	</div>
         	<div>
             		<ul class="nav navbar-nav">

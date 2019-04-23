@@ -15,31 +15,27 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 import sys
+import getpass
 import json
 import subprocess
 import time
 import os
 
-def init_database(nodes,is_client):
-	cmd="sudo python ./init.py usc558l"
+def init_database(nodes,db_password):
+	cmd="sudo python ./init.py "+db_password
 	os.system(cmd)
-	if is_client==1:
-		return
-	for node,node_data in nodes.iteritems():
-		cmd="sudo python ./insert_topo.py "+node+" "+node_data["links_to"]+" "+str(node_data["self"])
-		os.system(cmd)
 
-def add_client_entries(as_name,server_url,links_to,self):
+def add_client_entries(as_name,server_url,links_to,self,db_password):
 	if links_to=="None":
 		return
-	cmd="sudo python ./insert_senss_client.py usc558l "+as_name+" "+server_url+" "+links_to+" "+self
+	cmd="sudo python ./insert_senss_client.py "+db_password+" "+as_name+" "+server_url+" "+links_to+" "+self
 	os.system(cmd)
 
 def copy_files():
-	cmd="sudo cp -rf Server/ /var/www/html/"
+	cmd="sudo cp -rf ../Server /var/www/html/"
 	os.system(cmd)
 
-	cmd="sudo cp -rf Client/ /var/www/html/"
+	cmd="sudo cp -rf ../Client /var/www/html/"
 	os.system(cmd)
 
 def install_dependencies():
@@ -60,17 +56,16 @@ def print_data(data):
 def copy_certificates(server_flag,node):
 	print "Copying certificates"
 	if server_flag==True:
-    	cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem"
+	    	cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem"
 		os.system(cmd)
 	else:
 		certificate_to_copy=node+"cert.pem"
-	    cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem"
+		cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem"
 		os.system(cmd)
 
 def configure_nodes():
 	nodes={}
-	type=sys.argv[1]
-	f=open("nodes_ddos_with_sig","r")
+	f=open("nodes","r")
 	for line in f:
 		if "#" in line:
 			continue
@@ -78,40 +73,41 @@ def configure_nodes():
 		node_type=line.strip().split(" ")[1]
 		server_url=line.strip().split(" ")[2]
 		links_to=str(line.strip().split(" ")[3])
-		self=int(line.strip().split(" ")[4])
-		if node_type==type:
-			nodes[node]={}
-			nodes[node]["as_name"]=as_name
-			nodes[node]["node_type"]=node_type
-			nodes[node]["server_url"]=server_url
-			nodes[node]["links_to"]=links_to
-			nodes[node]["self"]=self
+		if node_type=="client":
+			self=1
+		else:
+			self=0
+		nodes[node]={}
+		nodes[node]["as_name"]=node
+		nodes[node]["node_type"]=node_type
+		nodes[node]["server_url"]=server_url
+		nodes[node]["links_to"]=links_to
+		nodes[node]["self"]=self
 	f.close()
+
+
+	type=raw_input("Setup for? (client or server): ")
+	type=type.strip()
+	db_password=getpass.getpass(prompt="Enter root password for mysql:")
+
+	install_dependencies()
+	init_database(nodes,db_password)
+	print "Initialised DB"
+	copy_files()
 
 	for node in nodes:
 		print "Node: ",node
-		install_dependencies()
-
-		if nodes[node]["node_type"]=="client":
-			init_database(nodes,1)
-		else:
-			init_database(nodes,0)
-		print "Initialised DB"
-
 		if nodes[node]["node_type"]=="client":
 			for node_1,values in nodes.iteritems():
 				self="0"
 				if values["node_type"]=="client":
 					self="1"
-
-				add_client_entries(values["asn"],values["server_url"],values["links_to"],self)
+				add_client_entries(values["as_name"],values["server_url"],values["links_to"],self,db_password)
 			print "Added client entries"
 
 		#copy server/client files
-		copy_files()
-
-		cmd="sudo service apache2 restart"
-		os.system(cmd)
+	cmd="sudo service apache2 restart"
+	os.system(cmd)
 
 if __name__ == '__main__':
 	configure_nodes()

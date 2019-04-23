@@ -1,0 +1,3 @@
+#Node, node_type, server_url, links_to
+ISI server http://hpc039/SENSS/UI_client_server/Server/api.php USC
+USC client http://hpc057/SENSS/UI_client_server/Server/api.php ISI

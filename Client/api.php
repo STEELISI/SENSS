@@ -43,8 +43,8 @@ if (isset($_GET["add_topo"])){
 }
 
 //Function used for testing purpose
-//if(isset($_GET['check'])){
-if(1){
+if(isset($_GET['check'])){
+//if(1){
     	require_once "db_conf.php";
     	$sql = "SELECT as_name,monitor_id FROM MONITORING_RULES";
     	$result = $conn->query($sql);
