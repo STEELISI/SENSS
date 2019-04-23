@@ -64,10 +64,10 @@ def copy_certificates(server_flag,node):
 	print "Copying certificates"
 	if server_flag==True:
         	cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem"
-			result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+		result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 	else:
 		certificate_to_copy=node+"cert.pem"
-        cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem"
+	        cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem"
 		result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 
 def configure_nodes():
