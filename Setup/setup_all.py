@@ -20,51 +20,55 @@ import subprocess
 import time
 import os
 
-def init_database(ssh,nodes,is_client):
-	stdin, stdout, stderr = ssh.exec_command("sudo python ./init.py usc558l")
-	data=stdout.readlines()
+def init_database(nodes,is_client):
+	cmd="sudo python ./init.py usc558l"
+	result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+	print result
 	if is_client==1:
 		return
 	for node,node_data in nodes.iteritems():
-		stdin, stdout, stderr = ssh.exec_command("sudo python ./insert_topo.py "+node+" "+node_data["links_to"]+" "+str(node_data["self"]))
-		data=stdout.readlines()
+		cmd="sudo python ./insert_topo.py "+node+" "+node_data["links_to"]+" "+str(node_data["self"])
+		result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 
-def add_client_entries(ssh,as_name,server_url,links_to,self):
+def add_client_entries(as_name,server_url,links_to,self):
 	if links_to=="None":
 		return
-	stdin, stdout, stderr = ssh.exec_command("sudo python ./insert_senss_client.py usc558l "+as_name+" "+server_url+" "+links_to+" "+self)
-	data=stdout.readlines()
+	cmd="sudo python ./insert_senss_client.py usc558l "+as_name+" "+server_url+" "+links_to+" "+self
+	result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 
-def copy_files(ssh):
-	stdin, stdout, stderr = ssh.exec_command("sudo cp -rf Server/ /var/www/html/")
-	data=stdout.readlines()
-	stdin, stdout, stderr = ssh.exec_command("sudo cp -rf Client/ /var/www/html/")
-	data=stdout.readlines()
+def copy_files():
+	cmd="sudo cp -rf Server/ /var/www/html/"
+	result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 
-def install_dependencies(ssh):
-	stdin, stdout, stderr = ssh.exec_command("sh ./install_dependencies.sh")
-	data=stdout.readlines()
+	cmd="sudo cp -rf Client/ /var/www/html/"
+	result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+
+
+def install_dependencies():
+	cmd="sh ./install_dependencies.sh"
+	result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
+
 	print "Installed dependencies"
 
 #Need to modify this to be supportive for multiple elements
-def start_monitor_flows(ssh,multiply,legit_address):
-	stdin, stdout, stderr = ssh.exec_command("screen -d -m sudo python /var/www/html/SENSS/UI_client_server/Server/monitor_flows.py "+str(multiply)+" "+str(legit_address))
-	data=stdout.readlines()
+def start_monitor_flows(multiply,legit_address):
+	cmd="screen -d -m sudo python /var/www/html/SENSS/UI_client_server/Server/monitor_flows.py "+str(multiply)+" "+str(legit_address)
+	result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 	print "Started Monitoring flows controller"
 
 def print_data(data):
 	for item in data:
 		print item.strip()
 
-def copy_certificates(server_flag,node,ssh):
+def copy_certificates(server_flag,node):
 	print "Copying certificates"
 	if server_flag==True:
-        	stdin, stdout, stderr = ssh.exec_command("sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem")
-        	data=stdout.readlines()
+        	cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem"
+			result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 	else:
 		certificate_to_copy=node+"cert.pem"
-        stdin, stdout, stderr = ssh.exec_command("sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem")
-        data=stdout.readlines()
+        cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem"
+		result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 
 def configure_nodes():
 	nodes={}
@@ -88,12 +92,12 @@ def configure_nodes():
 
 	for node in nodes:
 		print "Node: ",node
-		install_dependencies(ssh)
+		install_dependencies()
 
 		if nodes[node]["node_type"]=="client":
-			init_database(ssh,nodes,1)
+			init_database(nodes,1)
 		else:
-			init_database(ssh,nodes,0)
+			init_database(nodes,0)
 		print "Initialised DB"
 
 		if nodes[node]["node_type"]=="client":
@@ -102,22 +106,14 @@ def configure_nodes():
 				if values["node_type"]=="client":
 					self="1"
 				#print "Addding",values["asn"],values["server_url"],values["links_to"],self
-				add_client_entries(ssh,values["asn"],values["server_url"],values["links_to"],self)
+				add_client_entries(values["asn"],values["server_url"],values["links_to"],self)
 			print "Added client entries"
 
 		#copy server/client files
-		copy_files(ssh)
+		copy_files()
 
-		stdin, stdout, stderr = ssh.exec_command("sudo service apache2 restart")
-		data=stdout.readlines()
-
-		if nodes[node]["node_type"]=="client" and (attack_type=="proxy" or attack_type=="amon_proxy"):
-			stdin, stdout, stderr = ssh.exec_command("sudo rm /var/www/html/SENSS/UI_client_server/Client/constants.php")
-			data=stdout.readlines()
-			string_to_write="<?php\n"
-			string_to_write=string_to_write+'const PROXY_URL="http://'+proxy_ip+'/SENSS/UI_client_server/Proxy/api.php?action=proxy_info";\n'
-			stdin, stdout, stderr = ssh.exec_command("echo '"+string_to_write+"' | sudo tee -a /var/www/html/SENSS/UI_client_server/Client/constants.php")
-			data=stdout.readlines()
+		cmd="sudo service apache2 restart"
+		result = subprocess.run(cmd.split(), stdout=subprocess.PIPE)
 
 
 if __name__ == '__main__':
