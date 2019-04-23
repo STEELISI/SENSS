@@ -16,10 +16,6 @@
 #
 import sys
 import json
-import paramiko
-import getpass
-import socket
-import urllib2
 import subprocess
 import time
 import os
@@ -91,11 +87,6 @@ def configure_nodes():
 	f.close()
 
 	for node in nodes:
-		ssh = paramiko.SSHClient()
-		ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-		ssh.connect(node,username=user, password=password, timeout=3)
-		ip_1,ip_2,first_octet=return_ips(node)
-		controller_ip=socket.gethostbyname(node)
 		print "Node: ",node
 		install_dependencies(ssh)
 
