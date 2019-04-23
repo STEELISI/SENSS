@@ -60,8 +60,8 @@ def print_data(data):
 def copy_certificates(server_flag,node):
 	print "Copying certificates"
 	if server_flag==True:
-        	cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem"
-			os.system(cmd)
+    	cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/rootcert.pem /var/www/html/SENSS/UI_client_server/Server/cert/rootcert.pem"
+		os.system(cmd)
 	else:
 		certificate_to_copy=node+"cert.pem"
 	    cmd="sudo cp /proj/SENSS/SENSS_git/SENSS/UI_client_server/GenCertificates/certificates/"+certificate_to_copy+" /var/www/html/SENSS/UI_client_server/Client/cert/clientcert.pem"
@@ -81,6 +81,7 @@ def configure_nodes():
 		self=int(line.strip().split(" ")[4])
 		if node_type==type:
 			nodes[node]={}
+			nodes[node]["as_name"]=as_name
 			nodes[node]["node_type"]=node_type
 			nodes[node]["server_url"]=server_url
 			nodes[node]["links_to"]=links_to
@@ -102,7 +103,7 @@ def configure_nodes():
 				self="0"
 				if values["node_type"]=="client":
 					self="1"
-				#print "Addding",values["asn"],values["server_url"],values["links_to"],self
+
 				add_client_entries(values["asn"],values["server_url"],values["links_to"],self)
 			print "Added client entries"
 
