@@ -72,6 +72,7 @@ def copy_certificates(server_flag,node,ssh):
 
 def configure_nodes():
 	nodes={}
+	type=sys.argv[1]
 	f=open("nodes_ddos_with_sig","r")
 	for line in f:
 		if "#" in line:
@@ -81,11 +82,12 @@ def configure_nodes():
 		server_url=line.strip().split(" ")[2]
 		links_to=str(line.strip().split(" ")[3])
 		self=int(line.strip().split(" ")[4])
-		nodes[node]={}
-		nodes[node]["node_type"]=node_type
-		nodes[node]["server_url"]=server_url
-		nodes[node]["links_to"]=links_to
-		nodes[node]["self"]=self
+		if node_type==type:
+			nodes[node]={}
+			nodes[node]["node_type"]=node_type
+			nodes[node]["server_url"]=server_url
+			nodes[node]["links_to"]=links_to
+			nodes[node]["self"]=self
 	f.close()
 
 	for node in nodes:
