@@ -41,15 +41,8 @@ if (isset($_GET['upload_cert'])){
 if (isset($_GET["add_topo"])){
     	$input = file_get_contents("php://input");
     	$input = json_decode($input, true);
-//if (1){
-/*	$input=array(
-		"as_name"=>"H",
-		"server_url"=>"html",
-		"links_to"=>"asdasd",
-		"self"=>1
-	);*/
 	require_once "db_conf.php";
-	$sql = sprintf("INSERT INTO AS_URLS (as_name, server_url, links_to, self) VALUES ('%s', '%s', '%s', %d)", $input['as_name'], $input['server_url'], $input['links_to'], $input['self']);
+	$sql = sprintf("INSERT INTO AS_URLS (as_name, server_url, self) VALUES ('%s', '%s', %d)", $input['as_name'], $input['server_url'], $input['self']);
 	$conn->query($sql);
 	$conn->commit();
 	return;

@@ -5,20 +5,18 @@ $(document).ready(function () {
                 console.log("Button clicked");
                 document.getElementById('node_name').value='';
                 document.getElementById('server_url').value='';
-                document.getElementById('links_to').value='';
-                document.getElementById('is_victim').checked=false;
+                document.getElementById('senss_client').checked=false;
                 $("#set-threshold-modal").modal('show');
         });
 
         $("#add-nodes-button").click(function () {
                         var node_name = $("#node_name").val();
                         var server_url = $("#server_url").val();
-                        var links_to = $("#links_to").val();
                         var self=0;
-                        if (document.getElementById("is_victim").checked==true){
+                        if (document.getElementById("senss_client").checked==true){
                                 self=1;
                         }
-                        var data={"as_name":node_name,"server_url":server_url,"links_to":links_to,"self":self}
+                        var data={"as_name":node_name,"server_url":server_url,"self":self}
                         console.log("Data",data);
                         $.ajax({
                                 url: BASE_URI + "add_topo",
