@@ -30,7 +30,24 @@ $(document).ready(function () {
                                         console.log("SIVARAM: Added rules");
                                 }
                         });
-                        $("#set-threshold-modal").modal('hide');
-                        location.reload();
+			var file_data = document.getElementById("fileToUpload").files[0];
+		    	var form_data = new FormData();
+    			form_data.append('file', file_data);
+			form_data.append('file_name', node_name+"_cert.pem");
+    			$.ajax({
+			        url: BASE_URI + "upload_cert",
+		        	dataType: 'text',  // what to expect back from the PHP script, if anything
+        			cache: false,
+			        contentType: false,
+			        processData: false,
+			        data: form_data,
+			        type: 'post',
+			        success: function(php_script_response){
+					console.log(php_script_response);
+			        }
+			});
+			$("#set-threshold-modal").modal('hide');
+			location.reload();
         });
+
 });

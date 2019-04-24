@@ -41,35 +41,14 @@
 </nav>
 
 
-<body>
-
-
-<br />
-<br />
-<br />
+<div id="network-canvas" style="height: 500px; width: 1080px; margin: 0 auto; border: 1px solid black;"></div>
 <div class="container inner-container">
     <h2> Add Topo</h2>
-    <div class="row">
-	    <div id="network-canvas" style="height: 500px; width: 1080px; margin: 0 auto; border: 1px solid black;"></div>
-	</div>
-    <br />
     <div class="row">
     	<div class="col-sm-4">
      		<button type="button" class="btn btn-primary btn-small" name="submit" id="add-nodes">Add new SENSS server</button></span></p>
 	</div>
     </div>
-    <h2> Upload client certificate</h2>
-    <div class="row">
-    	<div class="col-sm-4">
-		<form action="upload.php" method="post" enctype="multipart/form-data">
-			<br />
-    				<input type="file" class="custom-file-input" name="fileToUpload" id="fileToUpload">
-				<br />
-    				<button type="submit" class="btn btn-primary btn-small" value="Upload Image" name="submit">Upload</button>
-		</form>
-	</div>
-</div>
-
 </div>
 
 <div id="set-threshold-modal" class="modal fade" role="dialog" aria-hidden="true">
@@ -106,6 +85,9 @@
                     <tr>
 			<input type="checkbox" id="is_victim"> Victim<br>
                     </tr>
+
+    		    <input type="file" class="custom-file-input" name="fileToUpload" id="fileToUpload">
+
                 </table>
             </div>
 
