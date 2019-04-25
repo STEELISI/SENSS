@@ -1,0 +1,21 @@
+Open SENSS server/client at html/{Server/Client}/exps/{server/client}.php
+should be customized for client or server (after all you know which one you're setting up, you just asked for this info) and it doesnt have html in the URL
+
+Change buttons in config to
+  - config this client
+  - config link to remote server
+
+Config SENSS client forces cert upload but we said it is either this or server-specific certs
+
+For certificate give some text like RPKI certificate or server-issued certificate, say something about which format this should be in
+
+For server URL give an example so that they understand they need the full URL
+
+It would be nice to have edit and remove not just remove 
+
+
+I should be able to remove just the certificate for the node and upload new one (back to the edit issue)
+
+Picture with two SENSS servers is wrong
+
+Client should be able to link to detector logs and know how to take signature from detector. I think you already have this functionality so you can add in configuration an optional "link to detector" 
