@@ -87,7 +87,7 @@
 			<td><span id="client_form_notification"></span></td>
 		    <tr>
                     <tr>
-			<th>Client name</th>
+			<th>AS name</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="client_node_name" class="form-control"></td>
