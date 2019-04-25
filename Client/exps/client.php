@@ -49,17 +49,90 @@
 </nav>
 
 
-<div id="network-canvas" style="height: 500px; width: 1080px; margin: 0 auto; border: 1px solid black;"></div>
+<!--<div id="network-canvas" style="height: 500px; width: 1080px; margin: 0 auto; border: 1px solid black;"></div>-->
+
 <div class="container inner-container">
     <h2>Setup</h2>
     <div class="row">
     	<div class="col-sm-4">
-     		<button type="button" class="btn btn-primary btn-small" name="submit" id="add-nodes">Add SENSS node</button></span></p>
+     		<button type="button" class="btn btn-primary btn-small" name="submit" id="client-node">Config client</button></span></p>
+	</div>
+    </div>
+</div>
+<div class="container inner-container">
+<table class='table table-bordered table-striped' id="log_table_client">
+<thead>
+<tr>
+<th>AS name</th>
+<th>Delete</th>
+</tr>
+</thead>
+        <tbody>
+        </tbody>
+</table>
+</div>
+
+
+<div id="config-client-modal" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Config SENSS client</h4>
+            </div>
+
+            <div class="modal-body" style="height:400px;">
+                <table class="table table-borderless">
+		    <tr>
+			<td><span id="client_form_notification"></span></td>
+		    <tr>
+                    <tr>
+			<th>Client name</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="client_node_name" class="form-control"></td>
+                    </tr>
+
+                    <tr>
+			<th>RPKI cert</th>
+                    </tr>
+		    <tr>
+	    		  <td><input type="file" class="custom-file-input" name="client_cert" id="client_cert"></td>
+		    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <div id="add-client-button" class="btn btn-success">Add</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container inner-container">
+    <div class="row">
+    	<div class="col-sm-4">
+     		<button type="button" class="btn btn-primary btn-small" name="submit" id="server-node">Config server</button></span></p>
 	</div>
     </div>
 </div>
 
-<div id="set-threshold-modal" class="modal fade" role="dialog" aria-hidden="true">
+<div class="container inner-container">
+<table class='table table-bordered table-striped' id="log_table_server">
+<thead>
+<tr>
+<th>AS name</th>
+<th>Server URL</th>
+<th>Delete</th>
+</tr>
+</thead>
+        <tbody>
+        </tbody>
+</table>
+</div>
+
+<div id="config-server-modal" class="modal fade" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -69,45 +142,44 @@
 
             <div class="modal-body" style="height:400px;">
                 <table class="table table-borderless">
+		    <tr>
+			<td><span id="server_form_notification"></span></td>
+		    <tr>
+
                     <tr>
 			<th>AS name</th>
                     </tr>
                     <tr>
-                        <td><input type="text" id="node_name" class="form-control"></td>
+                        <td><input type="text" id="server_node_name" class="form-control"></td>
                     </tr>
                     <tr>
-			<th>Server/client URL</th>
+			<th>Server URL</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="server_url" class="form-control"></td>
                     </tr>
 
                     <tr>
-			<th>Node type</th>
-                    </tr>
-                    <tr>
-			<td><input type="checkbox" id="senss_client"> SENSS client<br></td>
-			<td><input type="checkbox" id="senss_server"> SENSS server<br></td>
-                    </tr>
-
-                    <tr>
 			<th>Certificate</th>
                     </tr>
 		    <tr>
-	    		  <td><input type="file" class="custom-file-input" name="fileToUpload" id="fileToUpload"></td>
+	    		  <td><input type="file" class="custom-file-input" name="server_cert_to_upload" id="server_cert_to_upload"></td>
 		    </tr>
                 </table>
             </div>
 
             <div class="modal-footer">
-                <div id="add-nodes-button" class="btn btn-success">Add</div>
+                <div id="add-server-button" class="btn btn-success">Add</div>
             </div>
         </div>
     </div>
+
 </div>
+
+
 
 </body>
 <script src="js/add_topo.js"></script>
-<script src="js/render_network_ddos_with_sig.js"></script>
+<script src="js/logs_setup.js"></script>
 
 </html>

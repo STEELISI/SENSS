@@ -38,7 +38,6 @@ function poll_stats() {
                                                                 "<td>"+add_monitor[key][i][1]+"</td>" +
                                                                 "<td><pre>"+JSON.stringify(JSON.parse(add_monitor[key][i][0]), undefined, 4)+"</pre></td></tr>"; 
 						}
-					
 					markup=markup+"</table>";
 				}
 				markup=markup+"</div></div>";

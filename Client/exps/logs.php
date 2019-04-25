@@ -45,8 +45,6 @@
 
 <div id="table-add-monitor"></div>
 
-
-
 </body>
 <script src="js/logs_script.js"></script>
 </html>

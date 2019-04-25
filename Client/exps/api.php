@@ -744,12 +744,10 @@ if(isset($_GET['send_proxy_info_amon'])) {
 }
 
 if(isset($_GET['get_client_logs'])) {
-//if(1){
     	if (!isset($_GET['type'])) {
         	http_response_code(400);
         	return;
     	}
-	//$type="add_monitor";
 	$type=$_GET['type'];
         require_once "db_conf.php";
 	switch($type){
@@ -782,4 +780,62 @@ if(isset($_GET['get_client_logs'])) {
 	return;
 }
 
+if(isset($_GET['get_setup_logs'])) {
+   	if (!isset($_GET['type'])) {
+        	http_response_code(400);
+        	return;
+    	}
+    	$type = $_GET['type'];
+        require_once "db_conf.php";
+	if($type=="client"){
+		$sql="SELECT as_name,server_url from AS_URLS WHERE self=1";
+	        $result = $conn->query($sql);
+        	if ($result->num_rows > 0) {
+	                $return_array=array();
+        	        while ($row = $result->fetch_assoc()) {
+                	        array_push($return_array,$row);
+	                }
+			echo json_encode(array(
+                	        "success" => true,
+                        	"data" => $return_array
+	                ),true);
+			return;
+        	}
+	}
+	if($type=="server"){
+		$sql="SELECT as_name,server_url from AS_URLS WHERE self=0";
+	        $result = $conn->query($sql);
+        	if ($result->num_rows > 0) {
+	                $return_array=array();
+        	        while ($row = $result->fetch_assoc()) {
+                	        array_push($return_array,$row);
+	                }
+			echo json_encode(array(
+                	        "success" => true,
+                        	"data" => $return_array
+	                ),true);
+			return;
+        	}
+	}
+        echo json_encode(array(
+                "success" => false,
+                "error" => 400
+        ),true);
+	return;
+}
 
+
+if(isset($_GET['remove_node'])) {
+   	if (!isset($_GET['as_name']) && !isset($_GET['server_url'])) {
+        	http_response_code(400);
+        	return;
+    	}
+    	$as_name = $_GET['as_name'];
+	$server_url = $_GET['server_url'];
+    	require_once "db_conf.php";
+
+    	$sql = sprintf("DELETE FROM AS_URLS WHERE  as_name='%s' AND server_url='%s'",$as_name,$server_url);
+    	$conn->query($sql);
+    	$conn->commit();
+	return;
+}
