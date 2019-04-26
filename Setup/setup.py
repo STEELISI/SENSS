@@ -68,6 +68,9 @@ def configure_nodes():
 	cmd="sudo service apache2 restart"
 	os.system(cmd)
 
-	print "Open SENSS server/client at html/{Server/Client}/exps/{server/client}.php"
+	if type=="client":
+		print "Open SENSS client at Client/exps/client.php"
+	if type=="server":
+		print "Open SENSS server at Client/exps/server.php"
 if __name__ == '__main__':
 	configure_nodes()

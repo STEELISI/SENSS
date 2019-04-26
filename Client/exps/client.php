@@ -90,11 +90,11 @@
 			<th>AS name</th>
                     </tr>
                     <tr>
-                        <td><input type="text" id="client_node_name" class="form-control"></td>
+                        <td><input type="text" id="client_node_name" class="form-control" placeholder="ISI"></td>
                     </tr>
 
                     <tr>
-			<th>RPKI cert</th>
+			<th>RPKI certificate proving prefix ownership of this client</th>
                     </tr>
 		    <tr>
 	    		  <td><input type="file" class="custom-file-input" name="client_cert" id="client_cert"></td>
@@ -150,17 +150,17 @@
 			<th>AS name</th>
                     </tr>
                     <tr>
-                        <td><input type="text" id="server_node_name" class="form-control"></td>
+                        <td><input type="text" id="server_node_name" class="form-control" placeholder="USC"></td>
                     </tr>
                     <tr>
 			<th>Server URL</th>
                     </tr>
                     <tr>
-                        <td><input type="text" id="server_url" class="form-control"></td>
+                        <td><input type="text" id="server_url" class="form-control" placeholder="https://senss.isi.edu/api.php"></td>
                     </tr>
 
                     <tr>
-			<th>Certificate</th>
+			<th>Certificate (Custom certificate issued by the SENSS ISP)</th>
                     </tr>
 		    <tr>
 	    		  <td><input type="file" class="custom-file-input" name="server_cert_to_upload" id="server_cert_to_upload"></td>

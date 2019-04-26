@@ -6,10 +6,10 @@ function client_form_validation() {
 	console.log(file_data);
 	var return_flag=true;
 	var string_to_print="Complete the following:<br>";
-	if(file_data==null) {
+	/*if(file_data==null) {
 	    string_to_print=string_to_print+"Upload certificate<br>";
 	    return_flag=false;
-  	}
+  	}*/
 	if(client_node_name=="") {
 	    string_to_print=string_to_print+"Enter client name<br>";
 	    return_flag=false;
@@ -79,22 +79,24 @@ $(document).ready(function () {
         	                        }
 	                        });
 				var file_data = document.getElementById("client_cert").files[0];
-				console.log(file_data);
-			    	var form_data = new FormData();
-	    			form_data.append('file', file_data);
-				form_data.append('file_name', node_name+"_cert.pem");
-    				$.ajax({
-				        url: BASE_URI + "upload_cert",
-			        	dataType: 'text',
-        				cache: false,
-				        contentType: false,
-				        processData: false,
-				        data: form_data,
-				        type: 'post',
-			        	success: function(php_script_response){
-						console.log(php_script_response);
-				        }
-				});
+				if (file_data!=null){
+					console.log(file_data);
+				    	var form_data = new FormData();
+	    				form_data.append('file', file_data);
+					form_data.append('file_name', node_name+"_cert.pem");
+    					$.ajax({
+					        url: BASE_URI + "upload_cert",
+				        	dataType: 'text',
+        					cache: false,
+					        contentType: false,
+					        processData: false,
+				        	data: form_data,
+					        type: 'post',
+				        	success: function(php_script_response){
+							console.log(php_script_response);
+					        }
+					});
+				}
 				$("#config-client-modal").modal('hide');
 				location.reload();
 			}
