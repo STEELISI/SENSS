@@ -31,12 +31,12 @@ def add_client_entries(as_name,server_url,links_to,self,db_password):
 	cmd="sudo python ./insert_senss_client.py "+db_password+" "+as_name+" "+server_url+" "+links_to+" "+self
 	os.system(cmd)
 
-def copy_files(type):
+def copy_files(type,location):
 	if type=="server":
-		cmd="sudo cp -rf ../Server /var/www/html/"
+		cmd="sudo cp -rf ../Server "+location
 		os.system(cmd)
 	if type=="client":
-		cmd="sudo cp -rf ../Client /var/www/html/"
+		cmd="sudo cp -rf ../Client "+location
 		os.system(cmd)
 		os.system("sudo chown -R www-data /var/www/html/Client/exps/cert")
 
@@ -58,12 +58,18 @@ def print_data(data):
 def configure_nodes():
 	type=raw_input("Setup for? (client or server): ")
 	type=type.strip()
+
+	location=raw_input("Enter location of web server: ")
+	location=location.strip()
+
+
 	db_password=getpass.getpass(prompt="Enter root password for mysql:")
 
 	install_dependencies()
 	init_database(db_password)
 	print "Initialised DB"
-	copy_files(type)
+	#location="/var/www/html/"
+	copy_files(type,location)
 
 	cmd="sudo service apache2 restart"
 	os.system(cmd)

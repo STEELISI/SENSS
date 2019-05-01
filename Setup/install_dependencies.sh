@@ -1,7 +1,7 @@
 sudo apt-get update
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password usc558l'
 #sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password usc558l'
-sudo apt-get install mysql-server --assume-yes
+#sudo apt-get install mysql-server --assume-yes
 sudo apt-get install apache2 --assume-yes
 sudo apt-get install php5 --assume-yes
 sudo apt-get install python-mysqldb --assume-yes

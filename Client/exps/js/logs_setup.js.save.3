@@ -3,39 +3,37 @@ var thresholdRateMultiplier = 1;
 var threshold = 0;
 
 function populate_values_server(as_name,server_url,random){
-	var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+server_url+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td><td><button type='button' class='btn btn-danger' id='remove-node-server-" + random + "'>Delete</button></td></tr>";
+	var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td><button type='button' class='btn btn-danger' id='remove-node-" + random + "'>Remove node</button></td><td><button type='button' class='btn btn-danger' id='edit-node-" + random + "'>Edit node</button></td></tr>";
 	$("#log_table_server").append(markup);
 
-	$("#remove-node-server-" + random).click(function () {
+	$("#remove-node-" + random).click(function () {
 		console.log(random+" "+as_name);
 		$.ajax({
 			url: BASE_URI + "remove_node&as_name=" + as_name + "&server_url=" + server_url,
 			type: "GET",
 			success: function (result) {
 				$("#node-row-" + random).remove();
-				console.log(result);
 			}
 		});
 	});
 
-        $("#edit-node-server-" + random).click(function () {
-                $("#edit-server-modal").modal('show');
-                $("#edit_server_node_name").val(as_name);
-                $("#edit_server_url").val(server_url);
+        $("#edit-node-" + random).click(function () {
+                $("#edit-client-modal").modal('show');
+                $("#edit_client_node_name").val(as_name);
         });
 
 	$("#edit-server-button").click(function () {
 		var new_as_name=$("#edit_server_node_name").val();
 		var new_server_url=$("#edit_server_url").val();
 		$.ajax({
-			url: BASE_URI + "edit_node&old_as_name=" + as_name + "&old_server_url=" + server_url+ "&as_name="+new_as_name+"&server_url="+new_server_url,
+			url: BASE_URI + "edit_node&old_as_name=" + as_name + "&old_server_url=" + server_url+ "&as_name="+new_as_name+"&sd",
 			type: "GET",
 			success: function (result) {
 				console.log("Added name");
 			}
 		});
                                 
-		var file_data = document.getElementById("edit_server_cert_to_upload").files[0];
+		var file_data = document.getElementById("edit_server_cert").files[0];
 		if (file_data!=null){
 			var form_data = new FormData();
 			form_data.append('file', file_data);
@@ -104,30 +102,29 @@ function poll_stats_server() {
 
 
 function populate_values_client(as_name,server_url,random){
-	var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td><button type='button' class='btn btn-primary' id='edit-node-client-" + random + "'>Edit</button></td><td><button type='button' class='btn btn-danger' id='remove-node-client-" + random + "'>Delete</button></td></tr>";
+	var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td><button type='button' class='btn btn-danger' id='remove-node-" + random + "'>Remove node</button></td><td><button type='button' class='btn btn-danger' id='edit-node-" + random + "'>Edit node</button></td></tr>";
 	$("#log_table_client").append(markup);
 
-	$("#remove-node-client-" + random).click(function () {
+	$("#remove-node-" + random).click(function () {
+		console.log(random+" "+as_name);
 		$.ajax({
 			url: BASE_URI + "remove_node&as_name=" + as_name + "&server_url=" + server_url,
 			type: "GET",
 			success: function (result) {
 				$("#node-row-" + random).remove();
-				console.log(result);
 			}
 		});
 	});
 
-        $("#edit-node-client-" + random).click(function () {
+        $("#edit-node-" + random).click(function () {
                 $("#edit-client-modal").modal('show');
                 $("#edit_client_node_name").val(as_name);
         });
 
 	$("#edit-client-button").click(function () {
 		var new_as_name=$("#edit_client_node_name").val();
-		var new_server_url="";
 		$.ajax({
-			url: BASE_URI + "edit_node&old_as_name=" + as_name + "&old_server_url=" + server_url+ "&as_name="+new_as_name+"&server_url="+new_server_url,
+			url: BASE_URI + "edit_node&old_as_name=" + as_name + "&old_server_url=" + server_url+ "&as_name="+new_as_name,
 			type: "GET",
 			success: function (result) {
 				console.log("Added name");

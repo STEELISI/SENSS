@@ -6,10 +6,6 @@ function client_form_validation() {
 	console.log(file_data);
 	var return_flag=true;
 	var string_to_print="Complete the following:<br>";
-	/*if(file_data==null) {
-	    string_to_print=string_to_print+"Upload certificate<br>";
-	    return_flag=false;
-  	}*/
 	if(client_node_name=="") {
 	    string_to_print=string_to_print+"Enter client name<br>";
 	    return_flag=false;
@@ -85,7 +81,7 @@ $(document).ready(function () {
 	    				form_data.append('file', file_data);
 					form_data.append('file_name', node_name+"_cert.pem");
     					$.ajax({
-					        url: BASE_URI + "upload_cert",
+					        url: BASE_URI + "upload_cert&cert_type=new",
 				        	dataType: 'text',
         					cache: false,
 					        contentType: false,
@@ -127,7 +123,7 @@ $(document).ready(function () {
     					form_data.append('file', file_data);
 					form_data.append('file_name', node_name+"_cert.pem");
     					$.ajax({
-					        url: BASE_URI + "upload_cert",
+					        url: BASE_URI + "upload_cert&cert_type=new",
 			        		dataType: 'text',
         					cache: false,
 					        contentType: false,

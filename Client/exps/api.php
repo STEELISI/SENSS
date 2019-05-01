@@ -26,17 +26,50 @@ function generate_request_headers() {
 //Adding the topology
 //Add filter all used by DDoS with Signature to add filters to all monitoring nodes
 if (isset($_GET['upload_cert'])){
-	$target_dir = "/var/www/html/Client/exps/cert/";
-	$target_file = $target_dir . basename($_FILES["file"]["name"]);
-	$file_name = $_POST["file_name"];
-	//$target_file = $target_dir . basename($_FILES["file"]["name"]);
-	$target_file = $target_dir . $file_name;
-	if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
-		echo "Uploaded successfully";
+	$type=$_GET['cert_type'];
+	echo "Here is the list ".$type;
+	if($type=="new"){
+		$target_dir = "/var/www/html/Client/exps/cert/";
+		$target_file = $target_dir . basename($_FILES["file"]["name"]);
+		$file_name = $_POST["file_name"];
+		//$target_file = $target_dir . basename($_FILES["file"]["name"]);
+		$target_file = $target_dir . $file_name;
+		if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
+			echo "Uploaded successfully";
+		}
+		else{
+			echo "Upload failed ".$_POST["file_name"];
+		}
 	}
-	else{
-		echo "Upload failed ".$_FILES["file_name"];
+	if($type=="replace"){
+		$target_dir = "/var/www/html/Client/exps/cert/";
+		$target_file = $target_dir . basename($_FILES["file"]["name"]);
+		$old_target_file = $target_dir . $_POST["old_file_name"];
+		$file_name = $_POST["file_name"];
+		$target_file = $target_dir . $file_name;
+		echo "Here to check ".$old_target_file." ".file_exists($old_target_file);
+		if (file_exists($old_target_file)==1){
+			unlink($old_target_file);
+		}
+		if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
+			echo "Uploaded successfully";
+		}
+		else{
+			echo "Upload failed ".$_FILES["file_name"];
+		}
 	}
+
+	if($type=="rename"){
+		$target_dir = "/var/www/html/Client/exps/cert/";
+		$target_file = $target_dir . basename($_FILES["file"]["name"]);
+		$old_target_file = $target_dir . $_POST["old_file_name"];
+		$file_name = $_POST["file_name"];
+		$target_file = $target_dir . $file_name;
+		if (file_exists($old_target_file)==1){
+			rename( $old_target_file, $target_file);
+		}
+	}
+
 }
 if (isset($_GET["add_topo"])){
     	$input = file_get_contents("php://input");
@@ -835,6 +868,26 @@ if(isset($_GET['remove_node'])) {
     	require_once "db_conf.php";
 
     	$sql = sprintf("DELETE FROM AS_URLS WHERE  as_name='%s' AND server_url='%s'",$as_name,$server_url);
+    	$conn->query($sql);
+    	$conn->commit();
+	$target_file = "/var/www/html/Client/exps/cert/".$as_name."_cert.pem";
+	unlink($target_file);
+	return;
+}
+
+if(isset($_GET['edit_node'])) {
+   	if (!isset($_GET['as_name']) && !isset($_GET['server_url'])) {
+        	http_response_code(400);
+        	return;
+    	}
+    	$old_as_name = $_GET['old_as_name'];
+    	$old_server_url = $_GET['old_server_url'];
+    	$as_name = $_GET['as_name'];
+	$server_url = $_GET['server_url'];
+
+    	require_once "db_conf.php";
+
+    	$sql = sprintf("UPDATE AS_URLS SET as_name='%s' WHERE as_name='%s' AND server_url='%s'",$as_name, $old_as_name,$server_url);
     	$conn->query($sql);
     	$conn->commit();
 	return;

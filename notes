@@ -1,9 +1,9 @@
 #Open SENSS server/client at html/{Server/Client}/exps/{server/client}.php
 #should be customized for client or server (after all you know which one you're setting up, you just asked for this info) and it doesnt have html in the URL
 
-Change buttons in config to
-  - config this client
-  - config link to remote server
+#Change buttons in config to
+#  - config this client
+#  - config link to remote server
 
 #Config SENSS client forces cert upload but we said it is either this or server-specific certs
 
@@ -11,9 +11,9 @@ Change buttons in config to
 
 #For server URL give an example so that they understand they need the full URL
 
-It would be nice to have edit and remove not just remove 
+#It would be nice to have edit and remove not just remove 
 
-I should be able to remove just the certificate for the node and upload new one (back to the edit issue)
+#I should be able to remove just the certificate for the node and upload new one (back to the edit issue)
 
 Picture with two SENSS servers is wrong
 -- Sivaram: Let me talk to you in person about this. I want to see how you generated this. 
