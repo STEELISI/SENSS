@@ -1,0 +1,120 @@
+#!/usr/bin/perl
+
+
+sub trim
+{
+    $input = shift;
+    $input =~ s/^\s+//;
+    $input =~ s/\s+$//;
+    return $input;
+}
+
+$prologue="# Configuration file. If you remove a parameter the code may not work
+# properly. Run amon-senss.configure to generate this file through a
+# dialogue\n\n";
+
+open(my $fh, '>', 'as.config');
+print $fh $prologue;
+
+print "Welcome to AMON-SENSS configuration. We will ask you a few questions\n";
+print "to customize parameters to your needs. You can input new values or\n";
+print "press ENTER to keep default values.\n\n";
+    
+print "How often (in seconds) should detection process run? (default = 3) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "interval=3\n";
+}
+else
+{
+    print $fh "interval=" . trim($input) . "\n";
+}
+
+print "How much time (in seconds) does each of your input files cover? (default = 3600 or 1h) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "file_interval=3600\n";
+}
+else
+{
+    print $fh "file_interval=" . trim($input) . "\n";
+}
+
+print "What is the shortest attack (in seconds) you want to detect? (default = 30) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "attack_low=30\n";
+}
+else
+{
+    print $fh "attack_low=" . trim($input) . "\n";
+}
+
+print "How long should attack be dormant (in seconds) until we signal its end? (default = 60) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "attack_high=60\n";
+}
+else
+{
+    print $fh "attack_high=" . trim($input) . "\n";
+}
+
+
+print "How long should we train (in seconds) to learn normal traffic trends? (default = 3600 or 1h) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "min_train=3600\n";
+}
+else
+{
+    print $fh "min_train=" . trim($input) . "\n";
+}
+
+
+print "How many stdevs around the mean are considered normal range? (default = 5) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "numstd=5\n";
+}
+else
+{
+    print $fh "numstd=" . trim($input) . "\n";
+}
+
+
+print "How long do you want to measure (in seconds) once you have a possible signature, to estimate collateral damage? (default = 1s) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "report_thresh=1\n";
+}
+else
+{
+    print $fh "report_thresh=" . trim($input) . "\n";
+}
+
+print "If a signature were too broad, what level of collateral damage are you willing to tolerate? For example\n";
+print "out of every 100 flows dropped by the signature, how many would you tolerate to be legitimate flows? (default = 5) ";
+$input = <STDIN>;
+if (trim($input) eq "")
+{
+    print $fh "spec_thresh=0.05\n";
+}
+else
+{
+    $r = trim($input)/100;
+    print $fh "spec_thresh=" . $r . "\n";
+}
+
+print "\n\nConfiguration complete!\n";
+close($fh);
+
+
+

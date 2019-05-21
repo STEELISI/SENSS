@@ -1,0 +1,57 @@
+This is AMON-SENSS, software for scalable detection of DDoS attacks and
+creation of signatures for attack filtering. Signatures and alerts are
+exported in real time into alerts.txt file. You will soon discover when
+you run this tool that there are many attacks that get detected. This is
+an unfortunate fact -- today's traffic has many DDoS attacks present.
+Many are low volume or low duration and may not require a response. You
+can write another tool that parses alerts.txt and decides which attacks are
+sufficiently large and sufficiently long to require a response. In that case
+you can use the provided signature for the response.
+
+See the INSTALL file for detailed information about how to configure
+and install AMON-SENSS.
+
+Run the Perl script asc to configure the parameters via a dialogue. 
+
+To understand how AMON-SENSS works download the document
+http://steel.isi.edu/projects/SENSS/amon-senss.pdf
+
+AMON-SENSS has a Web page, with accompanying tools that can help you respond
+to attacks that are detected
+
+   https://steel.isi.edu/projects/SENSS/
+
+=======================================================================
+AMON-SENSS expects as input one or more files with Netflow records
+(nfdump or flow-tools format). If you specify a folder holding these
+files, possibly in some subfolders, the program will read the folder(s)
+contents, sort by file name and process files in this order.
+
+AMON-SENSS produces alerts in alerts.txt file in real time.
+The format of alerts.txt is as follows:
+
+START bin_number start_time volume asymmetry good_flows_matched bad_flows_matched signature
+STOP bin_number stop_time
+
+If you run it with -v flag, it will also produce some traffic statistics
+for each bin in binnumber.debug files. You can graph these with gnuplot
+or similar to see the traffic trends and the detection signals
+
+=======================================================================
+
+
+ Copyright (C) 2018 University of Southern California.
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License,
+ version 2, as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License along
+ with this program; if not, write to the Free Software Foundation, Inc.,
+ 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+

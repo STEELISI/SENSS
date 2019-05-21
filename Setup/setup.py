@@ -20,6 +20,16 @@ import json
 import subprocess
 import time
 import os
+def setup_amon(location):
+	print (location+"Client/AMON-SENSS/")
+        process = subprocess.Popen([location+"Client/AMON-SENSS/configure"], cwd=location+"Client/AMON-SENSS")
+        #process = subprocess.Popen(["ls"], cwd=location+"Client/AMON-SENSS/")
+	process.wait()
+        print (process.stdout)
+
+location="/var/www/html/"
+setup_amon(location)
+exit(1)
 
 def init_database(db_password):
 	cmd="sudo python ./init.py "+db_password
@@ -54,6 +64,11 @@ def start_monitor_flows(multiply,legit_address):
 def print_data(data):
 	for item in data:
 		print item.strip()
+
+def setup_amon(location):
+	process = subprocess.Popen(["./configure && make && make install"], cwd=location+"Client/")
+	p.wait()
+	print (process.stdout)
 
 def configure_nodes():
 	type=raw_input("Setup for? (client or server): ")

@@ -21,3 +21,6 @@ sudo apt-get install python-termcolor --assume-yes
 sudo apt-get install nload --assume-yes
 #sudo pip install cython eventlet six pbr netaddr stevedore oslo.config
 sudo service apache2 restart
+sudo apt-get install  libmysqlcppconn-dev
+sudo apt-get install libpcap-dev autoconf
+autoreconf -f -i
