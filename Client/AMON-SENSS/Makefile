@@ -189,7 +189,7 @@ AM_DEFAULT_VERBOSITY = 1
 AUTOCONF = ${SHELL} /nfs_ds/users/sivaram/SENSS_trials/SENSS/Client/AMON-SENSS/missing autoconf
 AUTOHEADER = ${SHELL} /nfs_ds/users/sivaram/SENSS_trials/SENSS/Client/AMON-SENSS/missing autoheader
 AUTOMAKE = ${SHELL} /nfs_ds/users/sivaram/SENSS_trials/SENSS/Client/AMON-SENSS/missing automake-1.15
-AWK = mawk
+AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2

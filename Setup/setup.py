@@ -20,16 +20,18 @@ import json
 import subprocess
 import time
 import os
-def setup_amon(location):
-	print (location+"Client/AMON-SENSS/")
-        process = subprocess.Popen([location+"Client/AMON-SENSS/configure"], cwd=location+"Client/AMON-SENSS")
-        #process = subprocess.Popen(["ls"], cwd=location+"Client/AMON-SENSS/")
+def setup_amon():
+        process = subprocess.Popen(["./configure"], cwd="../Client/AMON-SENSS")
 	process.wait()
         print (process.stdout)
 
-location="/var/www/html/"
-setup_amon(location)
-exit(1)
+        process = subprocess.Popen(["make"], cwd="../Client/AMON-SENSS")
+	process.wait()
+        print (process.stdout)
+
+        process = subprocess.Popen(["sudo","make","install"], cwd="../Client/AMON-SENSS")
+	process.wait()
+        print (process.stdout)
 
 def init_database(db_password):
 	cmd="sudo python ./init.py "+db_password
@@ -77,7 +79,8 @@ def configure_nodes():
 	location=raw_input("Enter location of web server: ")
 	location=location.strip()
 
-
+	if type=="client":
+		amon_senss()
 	db_password=getpass.getpass(prompt="Enter root password for mysql:")
 
 	install_dependencies()
