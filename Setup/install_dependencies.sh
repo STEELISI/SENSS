@@ -23,4 +23,5 @@ sudo apt-get install nload --assume-yes
 sudo service apache2 restart
 sudo apt-get install  libmysqlcppconn-dev
 sudo apt-get install libpcap-dev autoconf
+sudo apt-get install nfdump-flow-tools
 autoreconf -f -i

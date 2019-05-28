@@ -892,3 +892,36 @@ if(isset($_GET['edit_node'])) {
     	$conn->commit();
 	return;
 }
+
+
+if(isset($_GET['change_amon'])) {
+	$change_status=$_GET['change_status'];
+    	require_once "db_conf.php";
+	$sql = sprintf("UPDATE CLIENT_PROCESSES SET change_status=%d WHERE process_name='AMON SENSS'",$change_status);
+    	$conn->query($sql);
+    	$conn->commit();
+	return;
+}
+
+
+if(isset($_GET['get_amon'])) {
+    	require_once "db_conf.php";
+    	$sql = sprintf("SELECT process_name, status FROM CLIENT_PROCESSES");
+	$result = $conn->query($sql);
+	if ($result->num_rows > 0) {
+		$return_array=array();
+        	        while ($row = $result->fetch_assoc()) {
+                	        array_push($return_array,$row);
+	                }
+			echo json_encode(array(
+                	        "success" => true,
+                        	"data" => $return_array
+	                ),true);
+		return;
+	}
+	return;
+}
+
+
+
+

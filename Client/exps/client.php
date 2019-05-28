@@ -259,10 +259,27 @@
 
 </div>
 
+<div class="container inner-container">
+<table class='table table-bordered table-striped' id="client_processes">
+<thead>
+<tr>
+<th>Process</th>
+<th>Start/Stop</th>
+</tr>
+</thead>
+        <tbody>
+        </tbody>
+</table>
+</div>
+
+
+
+
 
 
 </body>
 <script src="js/add_topo.js"></script>
 <script src="js/logs_setup.js"></script>
+<script src="js/amon_setup.js"></script>
 
 </html>

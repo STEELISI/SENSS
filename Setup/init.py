@@ -19,6 +19,8 @@ import MySQLdb
 import sys
 
 password=sys.argv[1]
+interface=sys.argv[2]
+
 db=MySQLdb.connect(host="localhost",port=3306,user="root",passwd=password)
 cur=db.cursor()
 try:
@@ -72,6 +74,26 @@ except Exception as e:
 	cur.execute("DROP TABLE AS_URLS")
 	cur.execute("CREATE TABLE `AS_URLS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `server_url` varchar(255) NOT NULL, `links_to` text, `self` int(1) DEFAULT 0, PRIMARY KEY (`id`))")
 	print "Table AS_URLS created"
+
+
+try:
+	cur.execute("CREATE TABLE `CLIENT_PROCESSES` (`id` int(11) NOT NULL AUTO_INCREMENT, `process_name` varchar(45) NOT NULL, `status` INT NOT NULL, `change_status` INT NOT NULL, `interface` varchar(45) NOT NULL, `pid` INT NOT NULL, PRIMARY KEY (`id`))")
+	print "Table CLIENT_PROCESSES created"
+except Exception as e:
+	print e
+	print "Table CLIENT_PROCESSES already exists"
+	cur.execute("DROP TABLE CLIENT_PROCESSES")
+	cur.execute("CREATE TABLE `CLIENT_PROCESSES` (`id` int(11) NOT NULL AUTO_INCREMENT, `process_name` varchar(45) NOT NULL, `status` INT NOT NULL, `interface` VARCHAR(25) NOT NULL,`change_status` INT NOT NULL, `pid` INT NOT NULL, PRIMARY KEY (`id`))")
+	print "Table CLIENT_PROCESSES created"
+
+
+if interface!="None":
+	cmd="INSERT INTO `CLIENT_PROCESSES` (`id`, `process_name`,`status`,`change_status`,`interface`, `pid`) VALUES (%s,'%s',%d,%d,'%s',%d)" % (0,"AMON SENSS",0,0, interface, 0)
+else:
+	cmd="INSERT INTO `CLIENT_PROCESSES` (`id`, `process_name`,`status`, `change_status`, `pid`) VALUES (%s,'%s',%d,%d)" % (0,"AMON SENSS",0,0,0)
+
+cur.execute(cmd)
+db.commit()
 
 try:
 	cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")

@@ -21,21 +21,28 @@ import subprocess
 import time
 import os
 def setup_amon():
-        process = subprocess.Popen(["./configure"], cwd="../Client/AMON-SENSS")
+	#Removing AS
+	os.system("sudo rm /usr/local/bin/as")
+        process = subprocess.Popen(["./configure"], cwd="AMON-SENSS")
 	process.wait()
         print (process.stdout)
 
-        process = subprocess.Popen(["make"], cwd="../Client/AMON-SENSS")
+        process = subprocess.Popen(["make"], cwd="AMON-SENSS")
 	process.wait()
         print (process.stdout)
 
-        process = subprocess.Popen(["sudo","make","install"], cwd="../Client/AMON-SENSS")
+        process = subprocess.Popen(["sudo","make","install"], cwd="AMON-SENSS")
 	process.wait()
         print (process.stdout)
 
-def init_database(db_password):
-	cmd="sudo python ./init.py "+db_password
-	os.system(cmd)
+def init_database(db_password,interface,type):
+	if type=="client":
+		cmd="sudo python ./init.py "+db_password+" "+interface
+		os.system(cmd)
+	if type=="server":
+		cmd="sudo python ./init.py "+db_password+" None"
+		os.system(cmd)
+
 
 def add_client_entries(as_name,server_url,links_to,self,db_password):
 	if links_to=="None":
@@ -67,11 +74,6 @@ def print_data(data):
 	for item in data:
 		print item.strip()
 
-def setup_amon(location):
-	process = subprocess.Popen(["./configure && make && make install"], cwd=location+"Client/")
-	p.wait()
-	print (process.stdout)
-
 def configure_nodes():
 	type=raw_input("Setup for? (client or server): ")
 	type=type.strip()
@@ -79,18 +81,23 @@ def configure_nodes():
 	location=raw_input("Enter location of web server: ")
 	location=location.strip()
 
-	if type=="client":
-		amon_senss()
 	db_password=getpass.getpass(prompt="Enter root password for mysql:")
 
+	interface=""
+	if type=="client":
+		interface=raw_input("Enter network interface to monitor traffic: ")
+		interface=interface.strip()
+		setup_amon()
+
 	install_dependencies()
-	init_database(db_password)
+	init_database(db_password,interface,type)
 	print "Initialised DB"
 	#location="/var/www/html/"
 	copy_files(type,location)
 
 	cmd="sudo service apache2 restart"
 	os.system(cmd)
+
 
 	if type=="client":
 		print "Open SENSS client at Client/exps/client.php"

@@ -12,7 +12,7 @@ function client_form_validation() {
   	}
 	if(return_flag==false){
 	    var markup='<div class="alert alert-danger" role="alert">'+string_to_print+'</div>';
-	    document.getElementById('client_form_notification').innerHTML = "";;
+	    document.getElementById('client_form_notification').innerHTML = "";
 	    $("#client_form_notification").append(markup);
 	    return false;
 	}
@@ -36,7 +36,7 @@ function server_form_validation() {
 
 	if(return_flag==false){
 	    var markup='<div class="alert alert-danger" role="alert">'+string_to_print+'</div>';
-	    document.getElementById('server_form_notification').innerHTML = "";;
+	    document.getElementById('server_form_notification').innerHTML = "";
 	    $("#server_form_notification").append(markup);
 	    return false;
 	}

@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "usc558l";
+$password = "";
 $dbname = "SENSS_CLIENT";
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {

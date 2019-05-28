@@ -34,7 +34,7 @@ function populate_values_server(as_name,server_url,random){
 				console.log("Added name");
 			}
 		});
-                                
+
 		var file_data = document.getElementById("edit_server_cert_to_upload").files[0];
 		if (file_data!=null){
 			var form_data = new FormData();
@@ -86,7 +86,6 @@ function poll_stats_server() {
                         type: "GET",
                         success: function (result) {
                                 var resultParsed = JSON.parse(result);
-				console.log(resultParsed);
                                 if (resultParsed.success) {
                                         for (var i = 0; i < resultParsed.data.length; i++) {
 						var random = Math.random().toString(36).substring(7);
@@ -133,7 +132,6 @@ function populate_values_client(as_name,server_url,random){
 				console.log("Added name");
 			}
 		});
-                                
 		var file_data = document.getElementById("edit_client_cert").files[0];
 		if (file_data!=null){
 			var form_data = new FormData();
