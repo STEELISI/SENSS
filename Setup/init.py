@@ -20,131 +20,140 @@ import sys
 
 password=sys.argv[1]
 interface=sys.argv[2]
+type=sys.argv[3]
 
 db=MySQLdb.connect(host="localhost",port=3306,user="root",passwd=password)
 cur=db.cursor()
-try:
-	cur.execute("CREATE DATABASE SENSS")
-	print "Database SENSS created"
-except:
-	print "Database SENSS already exists"
 
-cur.execute("USE SENSS")
+if type=="server":
+	try:
+		cur.execute("CREATE DATABASE SENSS")
+		print "Database SENSS created"
+	except:
+		print "Database SENSS already exists"
 
-try:
-	cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `log_type` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `byte_count` bigint(20) DEFAULT NULL, `speed` varchar(45) DEFAULT NULL, `flag` int(1) DEFAULT 0, `active` int(1) DEFAULT NULL, `frequency` int(11) DEFAULT 0, `end_time` int(15) DEFAULT 0,`threshold` int(15) DEFAULT 10, PRIMARY KEY (`id`))")
-	print "Table CLIENT_LOGS created"
-except Exception as e:
-	print e
-	print "Table CLIENT_LOGS already exists"
-	cur.execute("DROP TABLE CLIENT_LOGS")
-	cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `log_type` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `byte_count` bigint(20) DEFAULT NULL, `speed` varchar(45) DEFAULT NULL, `flag` int(1) DEFAULT 0, `active` int(1) DEFAULT NULL, `frequency` int(11) DEFAULT 0, `end_time` int(15) DEFAULT 0,`threshold` int(15) DEFAULT 10, PRIMARY KEY (`id`))")
-	print "Table CLIENT_LOGS created"
+	cur.execute("USE SENSS")
 
-
-try:
-	cur.execute("CREATE TABLE `SERVER_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `end_time` int(15) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL,valid_request INT DEFAULT NULL,prefix_allowed varchar(45) DEFAULT NULL, speed varchar(25) DEFAULT NULL,PRIMARY KEY (`id`))")
-	print "Table SERVER_LOGS created"
-except Exception as e:
-	print e
-	print "Table SERVER_LOGS already exists"
-	cur.execute("DROP TABLE SERVER_LOGS")
-	cur.execute("CREATE TABLE `SERVER_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `end_time` int(15) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL,valid_request INT DEFAULT NULL,prefix_allowed varchar(45) DEFAULT NULL, speed varchar(25) DEFAULT NULL,PRIMARY KEY (`id`))")
-	print "Table SERVER_LOGS created"
+	try:
+		cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `log_type` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `byte_count` bigint(20) DEFAULT NULL, `speed` varchar(45) DEFAULT NULL, `flag` int(1) DEFAULT 0, `active` int(1) DEFAULT NULL, `frequency` int(11) DEFAULT 0, `end_time` int(15) DEFAULT 0,`threshold` int(15) DEFAULT 10, PRIMARY KEY (`id`))")
+		print "Table CLIENT_LOGS created"
+	except Exception as e:
+		print e
+		print "Table CLIENT_LOGS already exists"
+		cur.execute("DROP TABLE CLIENT_LOGS")
+		cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `log_type` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `byte_count` bigint(20) DEFAULT NULL, `speed` varchar(45) DEFAULT NULL, `flag` int(1) DEFAULT 0, `active` int(1) DEFAULT NULL, `frequency` int(11) DEFAULT 0, `end_time` int(15) DEFAULT 0,`threshold` int(15) DEFAULT 10, PRIMARY KEY (`id`))")
+		print "Table CLIENT_LOGS created"
 
 
 
-cur.close()
-cur=db.cursor()
-
-try:
-	cur.execute("CREATE DATABASE SENSS_CLIENT")
-	print "Database SENSS_CLIENT created"
-except:
-	print "Database SENSS_CLIENT already exists"
-
-cur.execute("USE SENSS_CLIENT")
-
-try:
-	cur.execute("CREATE TABLE `AS_URLS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `server_url` varchar(255) NOT NULL, `links_to` text, `self` int(1) DEFAULT 0, PRIMARY KEY (`id`))")
-	print "Table AS_URLS created"
-except Exception as e:
-	print e
-	print "Table AS_URLS already exists"
-	cur.execute("DROP TABLE AS_URLS")
-	cur.execute("CREATE TABLE `AS_URLS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `server_url` varchar(255) NOT NULL, `links_to` text, `self` int(1) DEFAULT 0, PRIMARY KEY (`id`))")
-	print "Table AS_URLS created"
+	try:
+		cur.execute("CREATE TABLE `SERVER_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `end_time` int(15) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL,valid_request INT DEFAULT NULL,prefix_allowed varchar(45) DEFAULT NULL, speed varchar(25) DEFAULT NULL,PRIMARY KEY (`id`))")
+		print "Table SERVER_LOGS created"
+	except Exception as e:
+		print e
+		print "Table SERVER_LOGS already exists"
+		cur.execute("DROP TABLE SERVER_LOGS")
+		cur.execute("CREATE TABLE `SERVER_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `end_time` int(15) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL,valid_request INT DEFAULT NULL,prefix_allowed varchar(45) DEFAULT NULL, speed varchar(25) DEFAULT NULL,PRIMARY KEY (`id`))")
+		print "Table SERVER_LOGS created"
 
 
-try:
-	cur.execute("CREATE TABLE `CLIENT_PROCESSES` (`id` int(11) NOT NULL AUTO_INCREMENT, `process_name` varchar(45) NOT NULL, `status` INT NOT NULL, `change_status` INT NOT NULL, `interface` varchar(45) NOT NULL, `pid` INT NOT NULL, PRIMARY KEY (`id`))")
-	print "Table CLIENT_PROCESSES created"
-except Exception as e:
-	print e
-	print "Table CLIENT_PROCESSES already exists"
-	cur.execute("DROP TABLE CLIENT_PROCESSES")
-	cur.execute("CREATE TABLE `CLIENT_PROCESSES` (`id` int(11) NOT NULL AUTO_INCREMENT, `process_name` varchar(45) NOT NULL, `status` INT NOT NULL, `interface` VARCHAR(25) NOT NULL,`change_status` INT NOT NULL, `pid` INT NOT NULL, PRIMARY KEY (`id`))")
-	print "Table CLIENT_PROCESSES created"
+	try:
+		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, PRIMARY KEY (`id`))")
+		print "Table CONSTANTS created"
+	except Exception as e:
+		print e
+		print "Table CONSTANTS already exists"
+		cur.execute("DROP TABLE CONSTANTS")
+		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, PRIMARY KEY (`id`))")
+		print "Table CONSTANTS created"
 
 
-if interface!="None":
-	cmd="INSERT INTO `CLIENT_PROCESSES` (`id`, `process_name`,`status`,`change_status`,`interface`, `pid`) VALUES (%s,'%s',%d,%d,'%s',%d)" % (0,"AMON SENSS",0,0, interface, 0)
-else:
-	cmd="INSERT INTO `CLIENT_PROCESSES` (`id`, `process_name`,`status`, `change_status`, `pid`) VALUES (%s,'%s',%d,%d)" % (0,"AMON SENSS",0,0,0)
+	cur.close()
+	cur=db.cursor()
 
-cur.execute(cmd)
-db.commit()
+if type=="client":
+	try:
+		cur.execute("CREATE DATABASE SENSS_CLIENT")
+		print "Database SENSS_CLIENT created"
+	except:
+		print "Database SENSS_CLIENT already exists"
 
-try:
-	cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")
-	print "Table MONITORING_RULES created"
-except Exception as e:
-	print e
-	print "Table MONITORING_RULES already exists"
-	cur.execute("DROP TABLE MONITORING_RULES")
-	cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")
-	print "Table MONITORING_RULES created"
+	cur.execute("USE SENSS_CLIENT")
 
-
-try:
-	cur.execute("CREATE TABLE `AMON_SENSS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `monitor_duration` int(15) DEFAULT 0,`type` text, PRIMARY KEY (`id`))")
-	print "Table MONITORING_RULES created"
-except Exception as e:
-	print e
-	print "Table MONITORING_RULES already exists"
-	cur.execute("DROP TABLE AMON_SENSS")
-	cur.execute("CREATE TABLE `AMON_SENSS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `monitor_duration` int(15) DEFAULT 0,`type` text, PRIMARY KEY (`id`))")
-	print "Table MONITORING_RULES created"
+	try:
+		cur.execute("CREATE TABLE `AS_URLS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `server_url` varchar(255) NOT NULL, `links_to` text, `self` int(1) DEFAULT 0, PRIMARY KEY (`id`))")
+		print "Table AS_URLS created"
+	except Exception as e:
+		print e
+		print "Table AS_URLS already exists"
+		cur.execute("DROP TABLE AS_URLS")
+		cur.execute("CREATE TABLE `AS_URLS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `server_url` varchar(255) NOT NULL, `links_to` text, `self` int(1) DEFAULT 0, PRIMARY KEY (`id`))")
+		print "Table AS_URLS created"
 
 
-#AS_NAME
-#Request_type - add_monitor, add_filter, remove_monitor, remove_filter, monitor_stats
-#Match field
-#Time
-#Traffic count
-#
-try:
-	cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `time` varchar(45) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL, speed varchar(2500) DEFAULT NULL,monitor_id int(5), PRIMARY KEY (`id`))")
-	print "Table CLIENT_LOGS created"
-except Exception as e:
-	print e
-	print "Table CLIENT_LOGS already exists"
-	cur.execute("DROP TABLE CLIENT_LOGS")
-	cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `time` varchar(45) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL, speed varchar(2500) DEFAULT NULL,monitor_id int(5), PRIMARY KEY (`id`))")
-	print "Table CLIENT_LOGS created"
-try:
-	cur.execute("CREATE DATABASE SENSS_PROXY")
-	print "Database SENSS_PROXY created"
-except:
-	print "Database SENSS_PROXY already exists"
-cur.execute("USE SENSS_PROXY")
+	try:
+		cur.execute("CREATE TABLE `CLIENT_PROCESSES` (`id` int(11) NOT NULL AUTO_INCREMENT, `process_name` varchar(45) NOT NULL, `status` INT NOT NULL, `change_status` INT NOT NULL, `interface` varchar(45) NOT NULL, `pid` INT NOT NULL, PRIMARY KEY (`id`))")
+		print "Table CLIENT_PROCESSES created"
+	except Exception as e:
+		print e
+		print "Table CLIENT_PROCESSES already exists"
+		cur.execute("DROP TABLE CLIENT_PROCESSES")
+		cur.execute("CREATE TABLE `CLIENT_PROCESSES` (`id` int(11) NOT NULL AUTO_INCREMENT, `process_name` varchar(45) NOT NULL, `status` INT NOT NULL, `interface` VARCHAR(25) NOT NULL,`change_status` INT NOT NULL, `pid` INT NOT NULL, PRIMARY KEY (`id`))")
+		print "Table CLIENT_PROCESSES created"
 
-try:
-	cur.execute("CREATE TABLE `NONCES` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ip` text NOT NULL, `nonce` text NOT NULL, PRIMARY KEY (`id`))")
-	print "Table nonces created"
-except Exception as e:
-	print e
-	print "Table NONCES already exists"
-	cur.execute("DROP TABLE NONCES")
-	cur.execute("CREATE TABLE `NONCES` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ip` text NOT NULL, `nonce` text NOT NULL, PRIMARY KEY (`id`))")
-	print "Table NONCES created"
+
+	if interface!="None":
+		cmd="INSERT INTO `CLIENT_PROCESSES` (`id`, `process_name`,`status`,`change_status`,`interface`, `pid`) VALUES (%s,'%s',%d,%d,'%s',%d)" % (0,"AMON SENSS",0,0, interface, 0)
+	else:
+		cmd="INSERT INTO `CLIENT_PROCESSES` (`id`, `process_name`,`status`, `change_status`, `pid`) VALUES (%s,'%s',%d,%d)" % (0,"AMON SENSS",0,0,0)
+
+
+	cur.execute(cmd)
+	db.commit()
+
+	try:
+		cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")
+		print "Table MONITORING_RULES created"
+	except Exception as e:
+		print e
+		print "Table MONITORING_RULES already exists"
+		cur.execute("DROP TABLE MONITORING_RULES")
+		cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")
+		print "Table MONITORING_RULES created"
+
+
+	try:
+		cur.execute("CREATE TABLE `AMON_SENSS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `monitor_duration` int(15) DEFAULT 0,`type` text, PRIMARY KEY (`id`))")
+		print "Table MONITORING_RULES created"
+	except Exception as e:
+		print e
+		print "Table MONITORING_RULES already exists"
+		cur.execute("DROP TABLE AMON_SENSS")
+		cur.execute("CREATE TABLE `AMON_SENSS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `monitor_duration` int(15) DEFAULT 0,`type` text, PRIMARY KEY (`id`))")
+		print "Table MONITORING_RULES created"
+
+	try:
+		cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `time` varchar(45) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL, speed varchar(2500) DEFAULT NULL,monitor_id int(5), PRIMARY KEY (`id`))")
+		print "Table CLIENT_LOGS created"
+	except Exception as e:
+		print e
+		print "Table CLIENT_LOGS already exists"
+		cur.execute("DROP TABLE CLIENT_LOGS")
+		cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `time` varchar(45) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL, speed varchar(2500) DEFAULT NULL,monitor_id int(5), PRIMARY KEY (`id`))")
+		print "Table CLIENT_LOGS created"
+	try:
+		cur.execute("CREATE DATABASE SENSS_PROXY")
+		print "Database SENSS_PROXY created"
+	except:
+		print "Database SENSS_PROXY already exists"
+	cur.execute("USE SENSS_PROXY")
+
+	try:
+		cur.execute("CREATE TABLE `NONCES` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ip` text NOT NULL, `nonce` text NOT NULL, PRIMARY KEY (`id`))")
+		print "Table nonces created"
+	except Exception as e:
+		print e
+		print "Table NONCES already exists"
+		cur.execute("DROP TABLE NONCES")
+		cur.execute("CREATE TABLE `NONCES` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ip` text NOT NULL, `nonce` text NOT NULL, PRIMARY KEY (`id`))")
+		print "Table NONCES created"

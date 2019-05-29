@@ -88,6 +88,110 @@
         	</div>
    	 </div>
 </div>
+
+<div class="container inner-container">
+    <div class="row">
+        <div class="col-sm-4">
+                <button type="button" class="btn btn-primary btn-small" name="submit" id="server-node">Config link to remote server</button></span></p>
+        </div>
+    </div>
+</div>
+
+<div class="container inner-container">
+<table class='table table-bordered table-striped' id="log_table_server">
+<thead>
+<tr>
+<th>AS name</th>
+<th>Server URL</th>
+<th>Edit</th>
+<th>Delete</th>
+
+</tr>
+</thead>
+        <tbody>
+        </tbody>
+</table>
+</div>
+
+<div id="config-server-modal" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Add SENSS node</h4>
+            </div>
+
+            <div class="modal-body" style="height:400px;">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><span id="server_form_notification"></span></td>
+                    <tr>
+
+                    <tr>
+                        <th>AS name</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="server_node_name" class="form-control" placeholder="USC"></td>
+                    </tr>
+                    <tr>
+                        <th>Server URL</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="controller_url" class="form-control" placeholder="https://sdn-controller.isi.edu:8080"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <div id="add-server-button" class="btn btn-success">Add</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div id="edit-server-modal" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Edit SENSS node</h4>
+            </div>
+
+            <div class="modal-body" style="height:400px;">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><span id="server_form_notification"></span></td>
+                    <tr>
+
+                    <tr>
+                        <th>AS name</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="edit_server_node_name" class="form-control" placeholder="USC"></td>
+                    </tr>
+                    <tr>
+                        <th>Server URL</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="edit_controller_url" class="form-control" placeholder="https://sdn-controller.isi.edu:8080"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <div id="edit-server-button" class="btn btn-success">Edit</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
 </body>
 <script src="js/script.js"></script>
 </html>

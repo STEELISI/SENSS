@@ -48,6 +48,67 @@ function set_threshold() {
         $("#current-threshold").html(threshold+" Rules");
 }
 
+function populate_values_server(as_name,controller_url,random){
+        var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td><td><button type='button' class='btn btn-danger' id='remove-node-server-" + random + "'>Delete</button></td></tr>";
+        $("#log_table_server").append(markup);
+
+        $("#remove-node-server-" + random).click(function () {
+                console.log(random+" "+as_name);
+                $.ajax({
+                        url: BASE_URI + "remove_controller&as_name=" + as_name + "&controller_url=" + controller_url,
+                        type: "GET",
+                        success: function (result) {
+                                $("#node-row-" + random).remove();
+                                console.log(result);
+                        }
+                });
+        });
+
+        $("#edit-node-server-" + random).click(function () {
+                $("#edit-server-modal").modal('show');
+                $("#edit_server_node_name").val(as_name);
+                $("#edit_controller_url").val(controller_url);
+        });
+
+        $("#edit-server-button").click(function () {
+                var new_as_name=$("#edit_server_node_name").val();
+                var new_controller_url=$("#edit_controller_url").val();
+                $.ajax({
+                        url: BASE_URI + "edit_controller&old_as_name=" + as_name + "&old_controller_url=" + controller_url+ "&as_name="+new_as_name+"&controller_url="+new_controller_url,
+                        type: "GET",
+                        success: function (result) {
+                                console.log("Added name");
+                        }
+                });
+                $("#edit-server-modal").modal('hide');
+                location.reload();
+        });
+}
+
+function poll_stats_server() {
+        var check_random=[];
+                var add_monitor=[];
+                $.ajax({
+                        url: BASE_URI + "get_constants",
+                        type: "GET",
+                        success: function (result) {
+                                var resultParsed = JSON.parse(result);
+                                if (resultParsed.success) {
+                                        for (var i = 0; i < resultParsed.data.length; i++) {
+                                                var random = Math.random().toString(36).substring(7);
+                                                 if (check_random.indexOf(random)==-1){
+                                                        check_random.push(random);
+                                                }
+                                                var as_name=resultParsed.data[i].as_name;
+                                                var controller_url=resultParsed.data[i].controller_url;
+                                                populate_values_server(as_name,controller_url,random)
+                                        }
+                                }
+                        }
+                });
+}
+
+
 $(document).ready(function () {
         set_threshold();
         poll_stats();
@@ -71,5 +132,36 @@ $(document).ready(function () {
                         }
                 });
          });
+
+	poll_stats_server();
+
+
+        $("#server-node").click(function () {
+                console.log("Button clicked");
+                document.getElementById('server_node_name').value='';
+                document.getElementById('controller_url').value='';
+                $("#config-server-modal").modal('show');
+        });
+
+
+        $("#add-server-button").click(function () {
+                                var node_name = $("#server_node_name").val();
+                                var controller_url = $("#controller_url").val();
+                                var data={"as_name":node_name,"controller_url":controller_url}
+                                console.log(data);
+                                $.ajax({
+                                        url: BASE_URI + "config_constants",
+                                        type: "POST",
+                                        data: JSON.stringify(data),
+                                        contentType: "application/json",
+                                        dataType: "json",
+                                        success: function (result) {
+                                                console.log("SIVARAM: Added config");
+                                        }
+                                });
+                                $("#config-server-modal").modal('hide');
+  //                              location.reload();
+        });
+
 });
 

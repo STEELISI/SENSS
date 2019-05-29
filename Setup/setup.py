@@ -43,10 +43,16 @@ def start_monitor(db_password):
 
 def init_database(db_password,interface,type):
 	if type=="client":
-		cmd="sudo python ./init.py "+db_password+" "+interface
+		if db_password=="":
+			cmd='sudo python ./init.py ""'+" "+interface+' client'
+		else:
+			cmd="sudo python ./init.py "+db_password+" "+interface+' client'
 		os.system(cmd)
 	if type=="server":
-		cmd="sudo python ./init.py "+db_password+" None"
+		if db_password=="":
+			cmd='sudo python ./init.py ""'+' None server'
+		else:
+			cmd="sudo python ./init.py "+db_password+' None server'
 		os.system(cmd)
 
 
@@ -112,6 +118,6 @@ def configure_nodes():
 	if type=="client":
 		print "Open SENSS client at Client/exps/client.php"
 	if type=="server":
-		print "Open SENSS server at Client/exps/server.php"
+		print "Open SENSS server at Server/server.php"
 if __name__ == '__main__':
 	configure_nodes()

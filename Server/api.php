@@ -11,17 +11,30 @@ if (!$client_info) {
     	return;
 }
 
+require_once "db.php";
+$sql="SELECT name,value,COUNT(request_type) from CONSTANTS";
+$result = $conn1->query($sql);
+if ($result->num_rows > 0) {
+	while ($row = $result->fetch_assoc()) {
+			//const SENSS_AS = $row["as_name"];
+			//const CONTROLLER_BASE_URL=$row["controller_url"];
+			define('SENSS_AS',$row["as_name"]);
+			define('CONTROLLER_BASE_URL',$row["controller_url"]);
+	}
+}
+
 function get_count()
 {
 	require_once "constants.php";
-    	$servername1 = "localhost";
-	$username1 = "root";
-	$password1 = "usc558l";
-	$dbname1 = "SENSS";
-	$conn1 = new mysqli($servername1, $username1, $password1, $dbname1);
-	if ($conn1->connect_error) {
-    		die("Connection failed: " . $conn1->connect_error);
-	}
+	require_once "db.php";
+    	//$servername1 = "localhost";
+	//$username1 = "root";
+	//$password1 = "usc558l";
+	//$dbname1 = "SENSS";
+	//$conn1 = new mysqli($servername1, $username1, $password1, $dbname1);
+	//if ($conn1->connect_error) {
+    	//	die("Connection failed: " . $conn1->connect_error);
+	//}
     	$sql="SELECT as_name,request_type,COUNT(request_type) AS count_request_type,end_time from SERVER_LOGS WHERE  request_type='Add filter' OR (request_type='Add monitor' AND ".time()."<end_time) OR request_type='Remove filter' GROUP BY request_type";
     	$result = $conn1->query($sql);
     	$add_filter=0;
@@ -258,7 +271,74 @@ switch ($action) {
         	echo json_encode($data, true);
         	return;
 
+
+	case "config_constants":
+	        $input = file_get_contents("php://input");
+	        $input = json_decode($input, true);
+        	require_once "db.php";
+	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url) VALUES ('%s', '%s')", $input['as_name'], $input['controller_url']);
+        	$conn->query($sql);
+	        $conn->commit();
+        	return;
+
+	case "remove_controller":
+	        if (!isset($_GET['as_name']) && !isset($_GET['controller_url'])) {
+        	        http_response_code(400);
+                	return;
+	        }
+        	$as_name = $_GET['as_name'];
+	        $server_url = $_GET['controller_url'];
+        	require_once "db.php";
+
+	        $sql = sprintf("DELETE FROM CONSTANTS WHERE as_name='%s' AND controller_url='%s'",$as_name,$controller_url);
+        	$conn->query($sql);
+	        $conn->commit();
+        	return;
+
+	case "edit_controller":
+	        if (!isset($_GET['as_name']) && !isset($_GET['controller_url'])) {
+        	        http_response_code(400);
+                	return;
+	        }
+        	$old_as_name = $_GET['old_as_name'];
+	        $old_controller_url = $_GET['old_controller_url'];
+        	$as_name = $_GET['as_name'];
+	        $controller_url = $_GET['controller_url'];
+
+        	require_once "db.php";
+
+	        $sql = sprintf("UPDATE CONSTANTS SET as_name='%s',controller_url='%s' WHERE as_name='%s' AND controller_url='%s'",$as_name, $controller_url, $old_as_name,$old_controller_url);
+        	$conn->query($sql);
+	        $conn->commit();
+        	return;
+
+
+	case "get_constants":
+	        require_once "db.php";
+                $sql="SELECT as_name,controller_url from CONSTANTS";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                        $return_array=array();
+                        while ($row = $result->fetch_assoc()) {
+				$return_array["as_name"]=$row["as_name"];
+				$return_array["controller_url"]=$row["controller_url"];
+                        }
+                        echo json_encode(array(
+                                "success" => true,
+                                "data" => $return_array
+                        ),true);
+                        return;
+                }
+        	echo json_encode(array(
+	                "success" => false,
+        	        "error" => 400
+	        ),true);
+        	return;
+
     	default:
         	http_response_code(400);
         	return;
 }
+
+
+
