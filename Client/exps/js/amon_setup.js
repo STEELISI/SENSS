@@ -3,23 +3,20 @@ var thresholdRateMultiplier = 1;
 var threshold = 0;
 
 function populate_values_amon(process_name,status,random){
-	console.log(process_name+" "+status+" "+random);
 	if (status==0){
-		var markup="<tr id='node-row-"+ random +"'><td>"+process_name+"</td>"+"</td><td><button type='button' class='btn btn-primary' id='config-amon-" + random + "'>Start</button></td></tr>";
+		var markup="<tr id='amon-node-row-"+ random +"'><td>"+process_name+"</td>"+"</td><td><button type='button' class='btn btn-primary' id='config-amon-" + random + "'>Start</button></td></tr>";
 	}
 	if (status==1){
-		var markup="<tr id='node-row-"+ random +"'><td>"+process_name+"</td>"+"</td><td><button type='button' class='btn btn-primary' id='config-amon-" + random + "'>Stop</button></td></tr>";
+		var markup="<tr id='amon-node-row-"+ random +"'><td>"+process_name+"</td>"+"</td><td><button type='button' class='btn btn-primary' id='config-amon-" + random + "'>Stop</button></td></tr>";
 	}
 	$("#client_processes").append(markup);
 
 	$("#config-amon-" + random).click(function () {
-		console.log("clicked");
                	$.ajax({
                         url: BASE_URI + "get_amon",
                         type: "GET",
                         success: function (result) {
                                 var resultParsed = JSON.parse(result);
-				console.log(resultParsed);
                                 if (resultParsed.success) {
                                         for (var i = 0; i < resultParsed.data.length; i++) {
 						var process_name=resultParsed.data[i].process_name;
@@ -33,7 +30,6 @@ function populate_values_amon(process_name,status,random){
 				else{
 					change_status=0;
 				}
-				console.log("Change status to "+change_status);
 		                $.ajax({
 		                        url: BASE_URI + "change_amon&change_status=" + change_status,
 		                        type: "GET",
@@ -49,15 +45,9 @@ function populate_values_amon(process_name,status,random){
                         }
                 });
         });
-
-
-
-
-
-
 }
 
-function populate_values_server(as_name,server_url,random){
+function populate_values_server_amon(as_name,server_url,random){
 	var check_random=[];
                 $.ajax({
                         url: BASE_URI + "get_amon",
@@ -82,6 +72,6 @@ function populate_values_server(as_name,server_url,random){
 
 
 $(document).ready(function () {
-        populate_values_server();
+        populate_values_server_amon();
 });
 
