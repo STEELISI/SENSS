@@ -49,11 +49,13 @@ function set_threshold() {
 }
 
 function populate_values_server(as_name,controller_url,random){
+	console.log("Populating values "+as_name+" "+controller_url+" "+random);
         var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td><td><button type='button' class='btn btn-danger' id='remove-node-server-" + random + "'>Delete</button></td></tr>";
         $("#log_table_server").append(markup);
 
         $("#remove-node-server-" + random).click(function () {
-                console.log(random+" "+as_name);
+		console.log("Removing controller");
+                console.log(random+" "+as_name+" "+controller_url);
                 $.ajax({
                         url: BASE_URI + "remove_controller&as_name=" + as_name + "&controller_url=" + controller_url,
                         type: "GET",
@@ -88,20 +90,25 @@ function populate_values_server(as_name,controller_url,random){
 function poll_stats_server() {
         var check_random=[];
                 var add_monitor=[];
+		console.log("Getting constants");
                 $.ajax({
                         url: BASE_URI + "get_constants",
                         type: "GET",
                         success: function (result) {
                                 var resultParsed = JSON.parse(result);
                                 if (resultParsed.success) {
+
                                         for (var i = 0; i < resultParsed.data.length; i++) {
+						console.log(resultParsed);
                                                 var random = Math.random().toString(36).substring(7);
                                                  if (check_random.indexOf(random)==-1){
                                                         check_random.push(random);
                                                 }
                                                 var as_name=resultParsed.data[i].as_name;
                                                 var controller_url=resultParsed.data[i].controller_url;
+						console.log(as_name+" "+controller_url);
                                                 populate_values_server(as_name,controller_url,random)
+
                                         }
                                 }
                         }
@@ -160,7 +167,7 @@ $(document).ready(function () {
                                         }
                                 });
                                 $("#config-server-modal").modal('hide');
-  //                              location.reload();
+                                location.reload();
         });
 
 });

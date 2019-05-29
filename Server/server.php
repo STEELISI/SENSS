@@ -92,7 +92,7 @@
 <div class="container inner-container">
     <div class="row">
         <div class="col-sm-4">
-                <button type="button" class="btn btn-primary btn-small" name="submit" id="server-node">Config link to remote server</button></span></p>
+                <button type="button" class="btn btn-primary btn-small" name="submit" id="server-node">Configure SENSS server</button></span></p>
         </div>
     </div>
 </div>
@@ -101,11 +101,10 @@
 <table class='table table-bordered table-striped' id="log_table_server">
 <thead>
 <tr>
-<th>AS name</th>
-<th>Server URL</th>
+<th>Name</th>
+<th>Controller URL</th>
 <th>Edit</th>
 <th>Delete</th>
-
 </tr>
 </thead>
         <tbody>
@@ -118,7 +117,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Add SENSS node</h4>
+                <h4 class="modal-title">Configure SENSS server</h4>
             </div>
 
             <div class="modal-body" style="height:400px;">
@@ -128,13 +127,13 @@
                     <tr>
 
                     <tr>
-                        <th>AS name</th>
+                        <th>Name</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="server_node_name" class="form-control" placeholder="USC"></td>
                     </tr>
                     <tr>
-                        <th>Server URL</th>
+                        <th>Controller URL</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="controller_url" class="form-control" placeholder="https://sdn-controller.isi.edu:8080"></td>
@@ -143,7 +142,7 @@
             </div>
 
             <div class="modal-footer">
-                <div id="add-server-button" class="btn btn-success">Add</div>
+                <div id="add-server-button" class="btn btn-success">Done</div>
             </div>
         </div>
     </div>
@@ -157,7 +156,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Edit SENSS node</h4>
+                <h4 class="modal-title">Edit SENSS server config</h4>
             </div>
 
             <div class="modal-body" style="height:400px;">
@@ -167,13 +166,13 @@
                     <tr>
 
                     <tr>
-                        <th>AS name</th>
+                        <th>Name</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="edit_server_node_name" class="form-control" placeholder="USC"></td>
                     </tr>
                     <tr>
-                        <th>Server URL</th>
+                        <th>Controller URL</th>
                     </tr>
                     <tr>
                         <td><input type="text" id="edit_controller_url" class="form-control" placeholder="https://sdn-controller.isi.edu:8080"></td>

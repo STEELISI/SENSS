@@ -67,6 +67,14 @@ if type=="server":
 		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, PRIMARY KEY (`id`))")
 		print "Table CONSTANTS created"
 
+	try:
+		cur.execute("CREATE TABLE `THRESHOLDS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `filter_requests` INT NOT NULL, `monitoring_requests` INT NOT NULL, `fair_sharing` INT NOT NULL, PRIMARY KEY (`id`))")
+		print "Table THRESHOLDS created"
+	except:
+		print "Table THRESHOLDS already exists"
+		cur.execute("DROP TABLE THRESHOLDS")
+		cur.execute("CREATE TABLE `THRESHOLDS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `filter_requests` INT NOT NULL, `monitoring_requests` INT NOT NULL, `fair_sharing` INT NOT NULL, PRIMARY KEY (`id`))")
+		print "Table THRESHOLDS created"
 
 	cur.close()
 	cur=db.cursor()
