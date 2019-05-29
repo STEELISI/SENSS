@@ -48,9 +48,9 @@ function set_threshold() {
         $("#current-threshold").html(threshold+" Rules");
 }
 
-function populate_values_server(as_name,controller_url,random){
+function populate_values_server(as_name,controller_url,rule_capacity,random){
 	console.log("Populating values "+as_name+" "+controller_url+" "+random);
-        var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td><td><button type='button' class='btn btn-danger' id='remove-node-server-" + random + "'>Delete</button></td></tr>";
+        var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td>"+rule_capacity+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td><td><button type='button' class='btn btn-danger' id='remove-node-server-" + random + "'>Delete</button></td></tr>";
         $("#log_table_server").append(markup);
 
         $("#remove-node-server-" + random).click(function () {
@@ -70,13 +70,15 @@ function populate_values_server(as_name,controller_url,random){
                 $("#edit-server-modal").modal('show');
                 $("#edit_server_node_name").val(as_name);
                 $("#edit_controller_url").val(controller_url);
+                $("#edit_rule_capacity").val(rule_capacity);
         });
 
         $("#edit-server-button").click(function () {
                 var new_as_name=$("#edit_server_node_name").val();
                 var new_controller_url=$("#edit_controller_url").val();
+                var new_rule_capacity=$("#edit_rule_capacity").val();
                 $.ajax({
-                        url: BASE_URI + "edit_controller&old_as_name=" + as_name + "&old_controller_url=" + controller_url+ "&as_name="+new_as_name+"&controller_url="+new_controller_url,
+                        url: BASE_URI + "edit_controller&old_as_name=" + as_name + "&old_controller_url=" + controller_url+ "&old_rule_capacity="+rule_capacity+"&as_name="+new_as_name+"&controller_url="+new_controller_url+"&rule_capacity="+new_rule_capacity,
                         type: "GET",
                         success: function (result) {
                                 console.log("Added name");
@@ -106,8 +108,9 @@ function poll_stats_server() {
                                                 }
                                                 var as_name=resultParsed.data[i].as_name;
                                                 var controller_url=resultParsed.data[i].controller_url;
+                                                var rule_capacity=resultParsed.data[i].rule_capacity;
 						console.log(as_name+" "+controller_url);
-                                                populate_values_server(as_name,controller_url,random)
+                                                populate_values_server(as_name,controller_url,rule_capacity,random)
 
                                         }
                                 }
@@ -147,6 +150,7 @@ $(document).ready(function () {
                 console.log("Button clicked");
                 document.getElementById('server_node_name').value='';
                 document.getElementById('controller_url').value='';
+                document.getElementById('rule_capacity').value='';
                 $("#config-server-modal").modal('show');
         });
 
@@ -154,7 +158,8 @@ $(document).ready(function () {
         $("#add-server-button").click(function () {
                                 var node_name = $("#server_node_name").val();
                                 var controller_url = $("#controller_url").val();
-                                var data={"as_name":node_name,"controller_url":controller_url}
+                                var rule_capacity = $("#rule_capacity").val();
+                                var data={"as_name":node_name,"controller_url":controller_url,"rule_capacity":rule_capacity}
                                 console.log(data);
                                 $.ajax({
                                         url: BASE_URI + "config_constants",

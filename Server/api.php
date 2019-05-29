@@ -296,7 +296,7 @@ switch ($action) {
 		require_once "constants.php";
 	        $input = file_get_contents("php://input");
 	        $input = json_decode($input, true);
-	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url) VALUES ('%s', '%s')", $input['as_name'], $input['controller_url']);
+	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url, rule_capacity) VALUES ('%s', '%s', %d)", $input['as_name'], $input['controller_url'], $input['rule_capacity']);
         	$conn1->query($sql);
 	        $conn1->commit();
         	return;
@@ -322,11 +322,13 @@ switch ($action) {
 		require_once "constants.php";
         	$old_as_name = $_GET['old_as_name'];
 	        $old_controller_url = $_GET['old_controller_url'];
+		$old_rule_capacity = $_GET['old_rule_capacity'];
         	$as_name = $_GET['as_name'];
 	        $controller_url = $_GET['controller_url'];
+		$rule_capacity = $_GET['rule_capacity'];
 
 
-	        $sql = sprintf("UPDATE CONSTANTS SET as_name='%s',controller_url='%s' WHERE as_name='%s' AND controller_url='%s'",$as_name, $controller_url, $old_as_name,$old_controller_url);
+	        $sql = sprintf("UPDATE CONSTANTS SET as_name='%s',controller_url='%s',rule_capacity='%d' WHERE as_name='%s' AND controller_url='%s'",$as_name, $controller_url, $rule_capacity,  $old_as_name,$old_controller_url);
         	$conn1->query($sql);
 	        $conn1->commit();
         	return;
@@ -334,12 +336,12 @@ switch ($action) {
 
 	case "get_constants":
 		require_once "constants.php";
-                $sql="SELECT as_name,controller_url from CONSTANTS";
+                $sql="SELECT as_name,controller_url,rule_capacity from CONSTANTS";
                 $result = $conn1->query($sql);
                 if ($result->num_rows > 0) {
                         $return_array=array();
                         while ($row = $result->fetch_assoc()) {
-				$temp=array("as_name"=>$row["as_name"],"controller_url"=>$row["controller_url"]);
+				$temp=array("as_name"=>$row["as_name"],"controller_url"=>$row["controller_url"], "rule_capacity"=>$row["rule_capacity"]);
 				array_push($return_array,$temp);
                         }
                         echo json_encode(array(

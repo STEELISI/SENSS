@@ -103,6 +103,7 @@
 <tr>
 <th>Name</th>
 <th>Controller URL</th>
+<th>Rule capacity</th>
 <th>Edit</th>
 <th>Delete</th>
 </tr>
@@ -137,6 +138,12 @@
                     </tr>
                     <tr>
                         <td><input type="text" id="controller_url" class="form-control" placeholder="https://sdn-controller.isi.edu:8080"></td>
+                    </tr>
+                    <tr>
+                        <th>Rule capacity</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="rule_capacity" class="form-control" placeholder="1000"></td>
                     </tr>
                 </table>
             </div>
@@ -177,6 +184,13 @@
                     <tr>
                         <td><input type="text" id="edit_controller_url" class="form-control" placeholder="https://sdn-controller.isi.edu:8080"></td>
                     </tr>
+                    <tr>
+                        <th>Rule capacity</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="edit_rule_capacity" class="form-control" placeholder="1000"></td>
+                    </tr>
+
                 </table>
             </div>
 

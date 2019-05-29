@@ -58,13 +58,13 @@ if type=="server":
 
 
 	try:
-		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, `rule_capcity` INT NOT NULL, PRIMARY KEY (`id`))")
 		print "Table CONSTANTS created"
 	except Exception as e:
 		print e
 		print "Table CONSTANTS already exists"
 		cur.execute("DROP TABLE CONSTANTS")
-		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, `rule_capacity` INT NOT NULL, PRIMARY KEY (`id`))")
 		print "Table CONSTANTS created"
 
 	try:
