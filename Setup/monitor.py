@@ -18,11 +18,9 @@ while True:
 		interface=item[3]
 		change_status=int(item[4])
 		pid=int(item[5])
-		print ("Checking",status,change_status)
 		if change_status!=status:
 			#Kill the process
 			if change_status==0:
-				print "Killing process",pid
 				os.system("kill -9 "+str(pid))
 				os.system("kill -9 "+str(pid+1))
 				os.system("kill -9 "+str(pid+2))
@@ -36,5 +34,4 @@ while True:
 				amon_pid=proc.pid
 				cur.execute("UPDATE CLIENT_PROCESSES SET pid=%d,status=%d WHERE process_name='%s'" % (amon_pid, change_status, process_name))
 				db.commit()
-				print "Starting process",amon_pid
 	time.sleep(5)

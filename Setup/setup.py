@@ -35,6 +35,12 @@ def setup_amon():
 	process.wait()
         print (process.stdout)
 
+def start_monitor(db_password):
+	if db_password=="":
+	        process = subprocess.Popen(['sudo python ./monitor.py ""'],shell=True)
+	else:
+	        process = subprocess.Popen(['sudo python ./monitor.py '+db_password],shell=True)
+
 def init_database(db_password,interface,type):
 	if type=="client":
 		cmd="sudo python ./init.py "+db_password+" "+interface
@@ -92,6 +98,10 @@ def configure_nodes():
 	install_dependencies()
 	init_database(db_password,interface,type)
 	print "Initialised DB"
+
+	if type=="client":
+		start_monitor(db_password)
+
 	#location="/var/www/html/"
 	copy_files(type,location)
 
