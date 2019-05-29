@@ -18,5 +18,5 @@
 Picture with two SENSS servers is wrong
 -- Sivaram: Let me talk to you in person about this. I want to see how you generated this. 
 
-Client should be able to link to detector logs and know how to take signature from detector. 
-I think you already have this functionality so you can add in configuration an optional "link to detector" 
+#Client should be able to link to detector logs and know how to take signature from detector. 
+#I think you already have this functionality so you can add in configuration an optional "link to detector" 
