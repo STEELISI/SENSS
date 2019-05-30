@@ -68,12 +68,12 @@ if type=="server":
 		print "Table CONSTANTS created"
 
 	try:
-		cur.execute("CREATE TABLE `THRESHOLDS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `filter_requests` INT NOT NULL, `monitoring_requests` INT NOT NULL, `fair_sharing` INT NOT NULL, PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `THRESHOLDS` (`as_name` varchar(45) NOT NULL, `used_filter_requests` INT NOT NULL, `max_filter_requests` INT NOT NULL, `used_monitoring_requests` INT NOT NULL, `max_monitoring_requests` INT NOT NULL, `fair_sharing` INT NOT NULL,`block_monitoring` INT NOT NULL, `block_filtering` INT NOT NULL, PRIMARY KEY (`as_name`))")
 		print "Table THRESHOLDS created"
 	except:
 		print "Table THRESHOLDS already exists"
 		cur.execute("DROP TABLE THRESHOLDS")
-		cur.execute("CREATE TABLE `THRESHOLDS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `filter_requests` INT NOT NULL, `monitoring_requests` INT NOT NULL, `fair_sharing` INT NOT NULL, PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `THRESHOLDS` (`as_name` varchar(45) NOT NULL, `used_filter_requests` INT NOT NULL, `max_filter_requests` INT NOT NULL, `used_monitoring_requests` INT NOT NULL, `max_monitoring_requests` INT NOT NULL, `fair_sharing` INT NOT NULL,`block_monitoring` INT NOT NULL, `block_filtering` INT NOT NULL, PRIMARY KEY (`as_name`))")
 		print "Table THRESHOLDS created"
 
 	cur.close()

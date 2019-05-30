@@ -46,13 +46,6 @@
     	<div class="col-md-8">
         	<h2>Logs</h2>
     	</div>
-    	<div class="col-md-4">
-        	Threshold: <span id="current-threshold"></span>&emsp;
-        	<button class="btn btn-primary" id="set-threshold">
-            	<span class="glyphicon glyphicon-pencil"></span>
-            		Edit
-        	</button>
-    	</div>
     	<table id="table-monitor" class="table table-bordered table-striped">
         	<thead>
         	<tr>
@@ -204,6 +197,67 @@
 
 
 
+
+
+
+
+
+
+<div class="container inner-container">
+<table class='table table-bordered table-striped' id="threshold_table">
+<thead>
+<tr>
+<th>SENSS client</th>
+<th>Active filter requests</th>
+<th>Max filter requests</th>
+<th>Active monitoring requests</th>
+<th>Max monitoring requests</th>
+<th>Fair sharing</th>
+<th>Block monitoring requests</th>
+<th>Block filtering requests</th>
+<th>Edit</th>
+</tr>
+</thead>
+        <tbody>
+        </tbody>
+</table>
+</div>
+
+<div id="config-threshold-modal" class="modal fade" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Configure SENSS server</h4>
+            </div>
+
+            <div class="modal-body" style="height:400px;">
+                <table class="table table-borderless">
+                    <tr>
+                        <td><span id="threshold_form_notification"></span></td>
+                    <tr>
+
+                    <tr>
+                        <th>Max filter requests</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="max_filter_requests" class="form-control" placeholder="1000"></td>
+                    </tr>
+                    <tr>
+                        <th>Max monitoring requests</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" id="max_monitoring_requests" class="form-control" placeholder="1000"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <div id="config-threshold-button" class="btn btn-success">Done</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 <script src="js/script.js"></script>

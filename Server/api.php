@@ -5,13 +5,11 @@ if (!isset($_GET['action'])) {
     	return;
 }
 
-//require_once "client_auth.php";
-//$client_info = client_auth(apache_request_headers());
 
 
 function get_count()
 {
-	//require_once "constants.php";
+	require_once "constants.php";
     	//$servername1 = "localhost";
 	//$username1 = "root";
 	//$password1 = "usc558l";
@@ -83,7 +81,68 @@ switch ($action) {
 		echo json_encode($get_count_array,true);
 		break;
 
+	case "update_threshold":
+		require_once "db.php";
+	    	$sql="SELECT as_name,request_type,COUNT(request_type) AS count_request_type,end_time from SERVER_LOGS WHERE  request_type='Add filter' OR (request_type='Add monitor' AND ".time()."<end_time) OR request_type='Remove filter' GROUP BY request_type";
+	    	$result = $conn1->query($sql);
+    		$add_filter=0;
+	    	$remove_filter=0;
+    		$monitoring_requests=0;
+		$as_requests=array();
+	    	if ($result->num_rows > 0) {
+        		while ($row = $result->fetch_assoc()) {
+				if(!isset($as_requests[$row["as_name"]])){
+					$as_requests[$row["as_name"]]=array(
+						"Add filter"=>0,
+						"Remove filter"=>0,
+						"Add monitor"=>0
+					);
+				}
+                		if ($row["request_type"]=="Add filter"){
+					$as_requests[$row["as_name"]]["Add filter"]=$row["count_request_type"];
+	                	}
+        	        	if ($row["request_type"]=="Remove filter"){
+					$as_requests[$row["as_name"]]["Remove filter"]=$row["count_request_type"];
+                		}
+	                	if ($row["request_type"]=="Add monitor"){
+        	                	$end_time=(int)$row["end_time"];
+                	        	if (time()<$end_time){
+						$as_requests[$row["as_name"]]["Add monitor"]=$row["count_request_type"];
+	                        	}
+        	        	}
+        		}
+	    	}
+		foreach ($as_requests as $key => $value){
+			$filtering_requests=$value["Add filter"]-$value["Remove filter"];
+			$monitoring_requests=$value["Add monitor"];
+			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, fair_sharing, block_monitoring, block_filtering) VALUES('%s', %d, %d, %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, 1000, $monitoring_requests, 1000, 0, 0, 0, $filtering_requests,$monitoring_requests);
+		    	$result = $conn1->query($sql);
+			$conn1->commit();
+		}
+		$sql="SELECT * FROM THRESHOLDS";
+		$result = $conn1->query($sql);
+                if ($result->num_rows > 0) {
+                        $return_array=array();
+                        while ($row = $result->fetch_assoc()) {
+				$temp=array("as_name"=>$row["as_name"],"used_filter_requests"=>$row["used_filter_requests"], "max_filter_requests"=>$row["max_filter_requests"], "used_monitoring_requests"=>$row["used_monitoring_requests"], "max_monitoring_requests"=>$row["max_monitoring_requests"], "fair_sharing"=>$row["fair_sharing"], "block_monitoring"=>$row["block_monitoring"], "block_filtering"=>$row["block_filtering"]);
+				array_push($return_array,$temp);
+                        }
+                        echo json_encode(array(
+                                "success" => true,
+                                "data" => $return_array
+                        ),true);
+                        return;
+		}
+		echo json_encode(array(
+                                "success" => true
+		),true);
+                return;
+
+
     	case "add_filter_alpha":
+		require_once "client_auth.php";
+		$client_info = client_auth(apache_request_headers());
+
 		if (!$client_info) {
 		    	http_response_code(400);
 		    	return;
@@ -124,6 +183,9 @@ switch ($action) {
        	 	break;
 
     	case "add_filter":
+		require_once "client_auth.php";
+		$client_info = client_auth(apache_request_headers());
+
 		if (!$client_info) {
 		    	http_response_code(400);
 		    	return;
@@ -178,6 +240,9 @@ switch ($action) {
         	break;
 
     	case "remove_filter":
+		require_once "client_auth.php";
+		$client_info = client_auth(apache_request_headers());
+
 		if (!$client_info) {
 		    	http_response_code(400);
 		    	return;
@@ -214,6 +279,9 @@ switch ($action) {
         	break;
 
     	case "add_monitor":
+		require_once "client_auth.php";
+		$client_info = client_auth(apache_request_headers());
+
 		if (!$client_info) {
 		    	http_response_code(400);
 		    	return;
@@ -239,6 +307,9 @@ switch ($action) {
         	break;
 
     	case "remove_monitor":
+		require_once "client_auth.php";
+		$client_info = client_auth(apache_request_headers());
+
 		if (!$client_info) {
 		    	http_response_code(400);
 		    	return;
@@ -265,6 +336,9 @@ switch ($action) {
         	break;
 
     	case "get_monitor":
+		require_once "client_auth.php";
+		$client_info = client_auth(apache_request_headers());
+
 		if (!$client_info) {
 		    	http_response_code(400);
 		    	return;
@@ -351,10 +425,98 @@ switch ($action) {
                         return;
                 }
         	echo json_encode(array(
-	                "success" => false,
-        	        "error" => 400
+	                "success" => false
 	        ),true);
         	return;
+
+	case "edit_threshold":
+		require_once "constants.php";
+		$old_max_filter_requests=$_GET["old_max_filter_requests"];
+		$old_max_monitoring_requests=$_GET["old_max_monitoring_requests"];
+		$max_filter_requests=$_GET["max_filter_requests"];
+		$max_monitoring_requests=$_GET["max_monitoring_requests"];
+        	$as_name = $_GET['as_name'];
+	        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d WHERE as_name='%s'",$max_filter_requests, $max_monitoring_requests, $as_name);
+        	$conn1->query($sql);
+	        $conn1->commit();
+        	return;
+
+	case "block_unblock":
+		require_once "constants.php";
+		$type=$_GET["type"];
+		$as_name=$_GET["as_name"];
+		if ($type=="monitoring"){
+	                $sql=sprintf("SELECT block_monitoring from THRESHOLDS where as_name='%s'",$as_name);
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$old_value=$row["block_monitoring"];
+			}
+			if ($old_value==0){
+				$new_value=1;
+			}
+			if ($old_value==1){
+				$new_value=0;
+			}
+	                $sql=sprintf("UPDATE THRESHOLDS SET block_monitoring=%d where as_name='%s'",$new_value,$as_name);
+	        	$conn1->query($sql);
+		        $conn1->commit();
+
+			echo json_encode(array(
+				"success" => true,
+				"data" => array(
+					"flip"=>$old_value
+				)
+			),true);
+			return;
+                }
+
+		if ($type=="filtering"){
+	                $sql=sprintf("SELECT block_filtering from THRESHOLDS where as_name='%s'",$as_name);
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$old_value=$row["block_filtering"];
+			}
+			if ($old_value==0){
+				$new_value=1;
+			}
+			if ($old_value==1){
+				$new_value=0;
+			}
+	                $sql=sprintf("UPDATE THRESHOLDS SET block_filtering=%d where as_name='%s'",$new_value,$as_name);
+	        	$conn1->query($sql);
+		        $conn1->commit();
+			echo json_encode(array(
+				"success" => true,
+				"data" => array(
+					"flip"=>$old_value
+				)
+			),true);
+			return;
+                }
+
+		if ($type=="fair_sharing"){
+	                $sql=sprintf("SELECT fair_sharing from THRESHOLDS where as_name='%s'",$as_name);
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$old_value=$row["fair_sharing"];
+			}
+			if ($old_value==0){
+				$new_value=1;
+			}
+			if ($old_value==1){
+				$new_value=0;
+			}
+	                $sql=sprintf("UPDATE THRESHOLDS SET fair_sharing=%d where as_name='%s'",$new_value,$as_name);
+	        	$conn1->query($sql);
+		        $conn1->commit();
+			echo json_encode(array(
+				"success" => true,
+				"data" => array(
+					"flip"=>$old_value
+				)
+			),true);
+			return;
+                }
 
     	default:
         	http_response_code(400);
