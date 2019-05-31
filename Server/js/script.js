@@ -121,12 +121,14 @@ function populate_values_server(as_name,controller_url,rule_capacity,random){
 					console.log(resultParsed);
 					if (resultParsed.success==false) {
 						var markup='<div class="alert alert-danger" role="alert">'+resultParsed.reason+'</div>';
+				             	document.getElementById('edit_server_form_notification').innerHTML = "";
+
 						 $("#edit_server_form_notification").append(markup);
 					}
 					if (resultParsed.success){
                 	                	console.log("Added name");
 			        	        $("#edit-server-modal").modal('hide');
-			                	//location.reload();
+			                	location.reload();
 					}
                         	}
 	                });
@@ -198,7 +200,8 @@ function populate_values_threshold(as_name,used_filter_requests,max_filter_reque
 	if (block_filtering=="0"){
 		markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-filtering-"+random+"'>Block</button></td>";
 	}
-	markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-"+random+"'>Edit</button></td></tr>";
+	markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-"+random+"'>Edit</button></td>";
+	markup=markup+"<td><button type='button' class='btn btn-danger' id='delete-all-"+random+"'>Revoke</button></td></tr>";
         $("#threshold_table").append(markup);
 
 
@@ -260,11 +263,22 @@ function populate_values_threshold(as_name,used_filter_requests,max_filter_reque
 	                        url: BASE_URI + "edit_threshold&old_max_filter_requests=" + max_filter_requests + "&old_max_monitoring_requests=" + max_monitoring_requests+ "&max_filter_requests="+new_max_filter_requests+"&max_monitoring_requests="+new_max_monitoring_requests+"&as_name="+as_name,
         	                type: "GET",
                 	        success: function (result) {
-                        	        console.log("Added name "+as_name);
+	                                var resultParsed = JSON.parse(result);
+        	                        console.log("Got feedback threshold");
+                	                console.log(resultParsed);
+					if(resultParsed.success){
+	                        	        console.log("Added name "+as_name);
+			                	$("#config-threshold-modal").modal('hide');
+				                location.reload();
+					}
+					else{
+						var markup='<div class="alert alert-danger" role="alert">'+resultParsed.reason+'</div>';
+				            	document.getElementById('threshold_form_notification').innerHTML = "";
+						$("#threshold_form_notification").append(markup);
+					}
+
 	                        }
         	        });
-                	$("#config-threshold-modal").modal('hide');
-	                location.reload();
         });
 
 }

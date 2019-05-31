@@ -34,7 +34,7 @@
         	</div>
         	<div>
             		<ul class="nav navbar-nav">
-                	<li><a href="direct_floods_form.php">Direct Floods</a></li>
+                	<li><a href="server.php">SENSS</a></li>
             		</ul>
         	</div>
     	</div>
@@ -42,23 +42,6 @@
 <body>
 
 
-<div class="container inner-container">
-    	<div class="col-md-8">
-        	<h2>Logs</h2>
-    	</div>
-    	<table id="table-monitor" class="table table-bordered table-striped">
-        	<thead>
-        	<tr>
-            		<th>Client AS Name</th>
-	    		<th>Request type</th>
-            		<th>Match</th>
-	    		<th>Number of requests</th>
-        	</tr>
-       	 	</thead>
-        <tbody>
-        </tbody>
-    </table>
-</div>
 <div id="set-threshold-modal" class="modal fade" role="dialog" aria-hidden="true">
     	<div class="modal-dialog">
         	<div class="modal-content">
@@ -215,6 +198,7 @@
 <th>Block monitoring requests</th>
 <th>Block filtering requests</th>
 <th>Edit</th>
+<th>Revoke</th>
 </tr>
 </thead>
         <tbody>
@@ -227,7 +211,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Configure SENSS server</h4>
+                <h4 class="modal-title">Edit thresholds</h4>
             </div>
 
             <div class="modal-body" style="height:400px;">
@@ -258,6 +242,24 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="container inner-container">
+    	<div class="col-md-8">
+        	<h2>Logs</h2>
+    	</div>
+    	<table id="table-monitor" class="table table-bordered table-striped">
+        	<thead>
+        	<tr>
+            		<th>Client AS Name</th>
+	    		<th>Request type</th>
+            		<th>Match</th>
+	    		<th>Number of requests</th>
+        	</tr>
+       	 	</thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
 
 </body>

@@ -124,7 +124,7 @@ switch ($action) {
 				$new_max_capacity=$max_capacity/(2*$total_clients);
 
 
-			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, block_monitoring, block_filtering, fair_sharing) VALUES('%s', %d, %d, %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, $new_max_capacity, $monitoring_requests, $new_max_capacity, 0, 0, 0, $filtering_requests,$monitoring_requests);
+			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, block_monitoring, block_filtering, fair_sharing, revoke) VALUES('%s', %d, %d, %d, %d, %d, %d, %d, 0) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, $new_max_capacity, $monitoring_requests, $new_max_capacity, 0, 0, 0, $filtering_requests,$monitoring_requests);
 		    	$result = $conn1->query($sql);
 			$conn1->commit();
 		}
@@ -540,6 +540,43 @@ switch ($action) {
 		$max_monitoring_requests=$_GET["max_monitoring_requests"];
         	$as_name = $_GET['as_name'];
 
+
+
+	                $sql=sprintf("SELECT rule_capacity from CONSTANTS");
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$max_capacity=$row["rule_capacity"];
+			}
+
+				$sql="SELECT used_filter_requests, used_monitoring_requests FROM THRESHOLDS";
+        		        $result = $conn1->query($sql);
+				$active_requests=0;
+                	        while ($row = $result->fetch_assoc()) {
+						$active_requests=$active_requests+$row["used_filter_requests"]+$row["used_monitoring_requests"];
+				}
+
+		//Monitoring
+		$monitoring_check=$max_capacity-$active_requests-$max_monitoring_requests;
+		$message="";
+		$message_flag=false;
+		if ($monitoring_check<0){
+			$message=$message."Maximum monitoring rules cannot be greater than available rule capacity.<br />";
+			$message_flag=true;
+		}
+		//Filtering
+		$filtering_check=$max_capacity-$active_requests-$max_filter_requests;
+		if ($filtering_check<0){
+			$message=$message."Maximum filtering rules cannot be greater than available rule capacity.";
+			$message_flag=true;
+		}
+		if($message_flag==true){
+                        echo json_encode(array(
+                                "success" => false,
+                                "reason" => $message
+                        ),true);
+                        return;
+		}
+
 	        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d,fair_sharing=1 WHERE as_name='%s'",$max_filter_requests, $max_monitoring_requests, $as_name);
         	$conn1->query($sql);
 	        $conn1->commit();
@@ -577,7 +614,12 @@ switch ($action) {
 		        		$conn1->commit();
 				}
 
-        	return;
+                        echo json_encode(array(
+                                "success" => true
+                        ),true);
+                        return;
+
+
 
 	case "block_unblock":
 		require_once "constants.php";
