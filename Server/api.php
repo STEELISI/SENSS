@@ -7,83 +7,75 @@ if (!isset($_GET['action'])) {
 
 
 
-function get_count()
+function get_count($as_name, $request_type)
 {
 	require_once "constants.php";
-    	//$servername1 = "localhost";
-	//$username1 = "root";
-	//$password1 = "usc558l";
-	//$dbname1 = "SENSS";
-	//$conn1 = new mysqli($servername1, $username1, $password1, $dbname1);
-	//if ($conn1->connect_error) {
-    	//	die("Connection failed: " . $conn1->connect_error);
-	//}
-    	$sql="SELECT as_name,request_type,COUNT(request_type) AS count_request_type,end_time from SERVER_LOGS WHERE  request_type='Add filter' OR (request_type='Add monitor' AND ".time()."<end_time) OR request_type='Remove filter' GROUP BY request_type";
+	$sql=sprintf("SELECT used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, block_monitoring, block_filtering FROM THRESHOLDS WHERE as_name='%s'",$as_name);
     	$result = $conn1->query($sql);
-    	$add_filter=0;
-    	$remove_filter=0;
-    	$add_monitor=0;
     	if ($result->num_rows > 0) {
         	while ($row = $result->fetch_assoc()) {
-                	if ($row["request_type"]=="Add filter"){
-                        	$add_filter=$row["count_request_type"];
-                	}
-                	if ($row["request_type"]=="Remove filter"){
-                        	$remove_filter=$row["count_request_type"];
-                	}
-                	if ($row["request_type"]=="Add monitor"){
-                        	$end_time=(int)$row["end_time"];
-                        	if (time()<$end_time){
-                                	$add_monitor=$row["count_request_type"];
-                        	}
-                	}
+			$used_filter_requests=$row["used_filter_requests"];
+			$max_filter_requests=$row["max_filter_requests"];
+			$used_monitoring_requests=$row["used_monitoring_requests"];
+			$max_monitoring_requests=$row["max_monitoring_requests"];
+			$block_monitoring=$row["block_monitoring"];
+			$block_filtering=$row["block_filtering"];
         	}
     	}
-    	$count=$add_filter-$remove_filter+$add_monitor;
-    	$threshold=10;
-    	$sql = sprintf("SELECT * FROM CLIENT_LOGS");
-    	$result = $conn1->query($sql);
-    	if ($result->num_rows > 0) {
-        	while ($row = $result->fetch_assoc()) {
-    			$threshold = $row['threshold'];
+	if($request_type=="Add filter"){
+		$used_filter_requests=$used_filter_requests+1;
+	    	if ($used_filter_requests>$max_filter_requests){
+			$excess_rules=true;
+	    	}
+    		else{
+			$excess_rules=false;
+    		}
+		if ($block_filtering==1){
+			$blocked=true;
 		}
-    	}
-    	$conn1->close();
-    	if ($count>$threshold){
-    		return array(
-			"threshold"=>$threshold,
-			"count"=>$count,
-			"excess_rules"=>true,
+		else{
+			$blocked=false;
+		}
+
+	    	return array(
+			"threshold"=>$max_filter_requests,
+			"count"=>$used_filter_requests-1,
+			"excess_rules"=>$excess_rules,
+			"blocked"=>$blocked,
 			"as_name"=>SENSS_AS
 		);
-    	}
-    	else{
-    		return array(
-			"threshold"=>$threshold,
-			"count"=>$count,
-			"excess_rules"=>false,
+	}
+	if($request_type=="Add monitor"){
+		$used_monitoring_requests=$used_monitoring_requests+1;
+	    	if ($used_monitoring_requests>$max_monitoring_requests){
+			$excess_rules=true;
+	    	}
+    		else{
+			$excess_rules=false;
+    		}
+		if ($block_monitoring==1){
+			$blocking=true;
+		}
+		else{
+			$blocking=false;
+		}
+	    	return array(
+			"threshold"=>$max_monitoring_requests,
+			"count"=>$used_monitoring_requests-1,
+			"excess_rules"=>$excess_rules,
+			"blocked"=>$blocked,
 			"as_name"=>SENSS_AS
 		);
-    	}
+	}
 }
 
 
 
 $action = $_GET['action'];
 switch ($action) {
-	case "check":
-		if (!$client_info) {
-		    	http_response_code(400);
-		    	return;
-		}
-		require_once "constants.php";
-		$get_count_array=get_count();
-		echo json_encode($get_count_array,true);
-		break;
-
 	case "update_threshold":
 		require_once "db.php";
-	    	$sql="SELECT as_name,request_type,COUNT(request_type) AS count_request_type,end_time from SERVER_LOGS WHERE  request_type='Add filter' OR (request_type='Add monitor' AND ".time()."<end_time) OR request_type='Remove filter' GROUP BY request_type";
+	    	$sql="SELECT as_name,request_type,COUNT(request_type) AS count_request_type,end_time from SERVER_LOGS WHERE  request_type='Add filter' OR (request_type='Add monitor' AND ".time()."<end_time) OR request_type='Remove filter' GROUP BY as_name,request_type";
 	    	$result = $conn1->query($sql);
     		$add_filter=0;
 	    	$remove_filter=0;
@@ -115,7 +107,24 @@ switch ($action) {
 		foreach ($as_requests as $key => $value){
 			$filtering_requests=$value["Add filter"]-$value["Remove filter"];
 			$monitoring_requests=$value["Add monitor"];
-			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, fair_sharing, block_monitoring, block_filtering) VALUES('%s', %d, %d, %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, 1000, $monitoring_requests, 1000, 0, 0, 0, $filtering_requests,$monitoring_requests);
+			//plsmark222
+	                $sql=sprintf("SELECT rule_capacity from CONSTANTS");
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$max_capacity=$row["rule_capacity"];
+			}
+
+				$sql="SELECT COUNT(DISTINCT as_name) AS count FROM SERVER_LOGS";
+
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$total_clients=$row["count"];
+				}
+
+				$new_max_capacity=$max_capacity/(2*$total_clients);
+
+
+			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, block_monitoring, block_filtering, fair_sharing) VALUES('%s', %d, %d, %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, $new_max_capacity, $monitoring_requests, $new_max_capacity, 0, 0, 0, $filtering_requests,$monitoring_requests);
 		    	$result = $conn1->query($sql);
 			$conn1->commit();
 		}
@@ -124,7 +133,7 @@ switch ($action) {
                 if ($result->num_rows > 0) {
                         $return_array=array();
                         while ($row = $result->fetch_assoc()) {
-				$temp=array("as_name"=>$row["as_name"],"used_filter_requests"=>$row["used_filter_requests"], "max_filter_requests"=>$row["max_filter_requests"], "used_monitoring_requests"=>$row["used_monitoring_requests"], "max_monitoring_requests"=>$row["max_monitoring_requests"], "fair_sharing"=>$row["fair_sharing"], "block_monitoring"=>$row["block_monitoring"], "block_filtering"=>$row["block_filtering"]);
+				$temp=array("as_name"=>$row["as_name"],"used_filter_requests"=>$row["used_filter_requests"], "max_filter_requests"=>$row["max_filter_requests"], "used_monitoring_requests"=>$row["used_monitoring_requests"], "max_monitoring_requests"=>$row["max_monitoring_requests"], "block_monitoring"=>$row["block_monitoring"], "block_filtering"=>$row["block_filtering"]);
 				array_push($return_array,$temp);
                         }
                         echo json_encode(array(
@@ -134,11 +143,11 @@ switch ($action) {
                         return;
 		}
 		echo json_encode(array(
-                                "success" => true
+                                "success" => false
 		),true);
                 return;
 
-
+	//Not sure if I use this anymore
     	case "add_filter_alpha":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
@@ -148,7 +157,8 @@ switch ($action) {
 		    	return;
 		}
 		require_once "constants.php";
-		$get_count_array=get_count();
+		$request_type="Add filter";
+		$get_count_array=get_count($client_info["as_name"],$request_type);
 		if($get_count_array['excess_rules']){
             		echo json_encode(array(
                     		"success" => false,
@@ -158,8 +168,19 @@ switch ($action) {
 		    		"threshold" => $get_count_array['threshold'],
 		    		"count" => $get_count_array['count']
                 	),true);
+	    		return;
+		}
+		if($get_count_array['blocked']){
+            		echo json_encode(array(
+                    		"success" => false,
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "Blocked"
+                	),true);
 	    		break;
 		}
+
+
 		require_once "filter.php";
         	$response=add_filter_all($client_info);
 		if (!$response["success"]){
@@ -191,17 +212,28 @@ switch ($action) {
 		    	return;
 		}
 		require_once "constants.php";
-		$get_count_array=get_count();
+
+		$request_type="Add filter";
+		$get_count_array=get_count($client_info["as_name"],$request_type);
 		if($get_count_array['excess_rules']){
             		echo json_encode(array(
-                		"success" => false,
+                    		"success" => false,
                     		"error" => 500,
-		    		"as_name" =>$get_count_array['as_name'],
+		    		"as_name" => $get_count_array['as_name'],
                     		"details" => "Not sufficient rules",
 		    		"threshold" => $get_count_array['threshold'],
 		    		"count" => $get_count_array['count']
                 	),true);
-	   		 break;
+	    		return;
+		}
+		if($get_count_array['blocked']){
+            		echo json_encode(array(
+                    		"success" => false,
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "Blocked"
+                	),true);
+	    		break;
 		}
 
         	if (!isset($_GET['monitor_id'])) {
@@ -287,17 +319,29 @@ switch ($action) {
 		    	return;
 		}
 		require_once "constants.php";
-		$get_count_array=get_count();
+		$request_type="Add monitor";
+		$get_count_array=get_count($client_info["as_name"],$request_type);
 		if($get_count_array['excess_rules']){
             		echo json_encode(array(
                     		"success" => false,
-                    		"error" => "Not sufficient rules",
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "Not sufficient rules",
 		    		"threshold" => $get_count_array['threshold'],
 		    		"count" => $get_count_array['count']
-                		)
-            		);
+                	),true);
+	    		return;
+		}
+		if($get_count_array['blocked']){
+            		echo json_encode(array(
+                    		"success" => false,
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "Blocked"
+                	),true);
 	    		break;
 		}
+
         	require_once "monitor.php";
         	$response = add_monitor($client_info, file_get_contents("php://input"));
         	http_response_code(200);
@@ -370,23 +414,11 @@ switch ($action) {
 		require_once "constants.php";
 	        $input = file_get_contents("php://input");
 	        $input = json_decode($input, true);
-	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url, rule_capacity) VALUES ('%s', '%s', %d)", $input['as_name'], $input['controller_url'], $input['rule_capacity']);
+	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url, rule_capacity, fair_sharing) VALUES ('%s', '%s', %d, %d)", $input['as_name'], $input['controller_url'], $input['rule_capacity'], $input["fair_sharing"]);
         	$conn1->query($sql);
 	        $conn1->commit();
         	return;
 
-	case "remove_controller":
-	        if (!isset($_GET['as_name']) && !isset($_GET['controller_url'])) {
-        	        http_response_code(400);
-                	return;
-	        }
-		require_once "constants.php";
-        	$as_name = $_GET['as_name'];
-	        $controller_url = $_GET['controller_url'];
-	        $sql = sprintf("DELETE FROM CONSTANTS WHERE as_name='%s' AND controller_url='%s'",$as_name,$controller_url);
-        	$conn1->query($sql);
-	        $conn1->commit();
-        	return;
 
 	case "edit_controller":
 	        if (!isset($_GET['as_name']) && !isset($_GET['controller_url'])) {
@@ -402,10 +434,81 @@ switch ($action) {
 		$rule_capacity = $_GET['rule_capacity'];
 
 
+
+
+		//check if there are enough rules
+		
+				$sql="SELECT COUNT(*) AS count FROM THRESHOLDS";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$total_clients=$row["count"];
+				}
+
+
+				$sql="SELECT used_filter_requests, used_monitoring_requests FROM THRESHOLDS";
+        		        $result = $conn1->query($sql);
+				$max_request=0;
+                	        while ($row = $result->fetch_assoc()) {
+					if($row["used_filter_requests"]>$max_request){
+						$max_request=$row["used_filter_requests"];
+					}
+					if($row["used_monitoring_requests"]>$max_request){
+						$max_request=$row["used_monitoring_requests"];
+					}
+				}
+				$current_capacity=$rule_capacity/(2*$total_clients);
+				//$max_capacity=$rule_capacity-$nf_filter_requests-$nf_monitoring_requests;
+
+		if($current_capacity<$max_request){
+                        echo json_encode(array(
+                                "success" => false,
+                                "reason" => "Not enough rules to support active rules"
+                        ),true);
+                        return;
+		}
+
 	        $sql = sprintf("UPDATE CONSTANTS SET as_name='%s',controller_url='%s',rule_capacity='%d' WHERE as_name='%s' AND controller_url='%s'",$as_name, $controller_url, $rule_capacity,  $old_as_name,$old_controller_url);
         	$conn1->query($sql);
 	        $conn1->commit();
-        	return;
+
+	                $sql=sprintf("SELECT rule_capacity from CONSTANTS");
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$max_capacity=$row["rule_capacity"];
+			}
+
+				$sql="SELECT COUNT(*) AS count FROM THRESHOLDS where fair_sharing=0";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$total_clients=$row["count"];
+				}
+
+
+				$sql="SELECT max_filter_requests, max_monitoring_requests FROM THRESHOLDS WHERE fair_sharing=1";
+        		        $result = $conn1->query($sql);
+				$nf_filter_requests=0;
+				$nf_monitoring_requests=0;
+                	        while ($row = $result->fetch_assoc()) {
+					$nf_filter_requests=$nf_filter_requests+$row["max_filter_requests"];
+					$nf_monitoring_requests=$nf_monitoring_requests+$row["max_monitoring_requests"];
+				}
+
+				$max_capacity=$max_capacity-$nf_filter_requests-$nf_monitoring_requests;
+
+				$sql="SELECT as_name FROM THRESHOLDS where fair_sharing=0";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$as_name=$row["as_name"];
+					$new_max_requests=$max_capacity/(2*$total_clients);
+				        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d WHERE as_name='%s'",$new_max_requests, $new_max_requests, $as_name);
+        				$conn1->query($sql);
+		        		$conn1->commit();
+				}
+
+                        echo json_encode(array(
+                                "success" => true
+                        ),true);
+                        return;
 
 
 	case "get_constants":
@@ -436,9 +539,44 @@ switch ($action) {
 		$max_filter_requests=$_GET["max_filter_requests"];
 		$max_monitoring_requests=$_GET["max_monitoring_requests"];
         	$as_name = $_GET['as_name'];
-	        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d WHERE as_name='%s'",$max_filter_requests, $max_monitoring_requests, $as_name);
+
+	        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d,fair_sharing=1 WHERE as_name='%s'",$max_filter_requests, $max_monitoring_requests, $as_name);
         	$conn1->query($sql);
 	        $conn1->commit();
+
+
+	                $sql=sprintf("SELECT rule_capacity from CONSTANTS");
+        	        $result = $conn1->query($sql);
+                        while ($row = $result->fetch_assoc()) {
+				$max_capacity=$row["rule_capacity"];
+			}
+
+				$sql="SELECT max_filter_requests, max_monitoring_requests FROM THRESHOLDS WHERE fair_sharing=1";
+        		        $result = $conn1->query($sql);
+				$nf_filter_requests=0;
+				$nf_monitoring_requests=0;
+                	        while ($row = $result->fetch_assoc()) {
+					$nf_filter_requests=$nf_filter_requests+$row["max_filter_requests"];
+					$nf_monitoring_requests=$nf_monitoring_requests+$row["max_monitoring_requests"];
+				}
+
+				$max_capacity=$max_capacity-$nf_filter_requests-$nf_monitoring_requests;
+				$sql="SELECT COUNT(*) AS count FROM THRESHOLDS WHERE fair_sharing=0";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$total_clients=$row["count"];
+				}
+
+				$sql="SELECT as_name FROM THRESHOLDS WHERE fair_sharing=0";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$as_name=$row["as_name"];
+					$new_max_requests=$max_capacity/(2*$total_clients);
+				        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d WHERE as_name='%s'",$new_max_requests, $new_max_requests, $as_name);
+        				$conn1->query($sql);
+		        		$conn1->commit();
+				}
+
         	return;
 
 	case "block_unblock":
@@ -494,29 +632,40 @@ switch ($action) {
 			return;
                 }
 
-		if ($type=="fair_sharing"){
-	                $sql=sprintf("SELECT fair_sharing from THRESHOLDS where as_name='%s'",$as_name);
+	case "apply_fair_sharing":
+		require_once "constants.php";
+		$as_name=$_GET["as_name"];
+	                $sql=sprintf("SELECT rule_capacity from CONSTANTS where as_name='%s'",$as_name);
         	        $result = $conn1->query($sql);
                         while ($row = $result->fetch_assoc()) {
-				$old_value=$row["fair_sharing"];
+				$max_capacity=$row["rule_capacity"];
 			}
-			if ($old_value==0){
-				$new_value=1;
-			}
-			if ($old_value==1){
-				$new_value=0;
-			}
-	                $sql=sprintf("UPDATE THRESHOLDS SET fair_sharing=%d where as_name='%s'",$new_value,$as_name);
-	        	$conn1->query($sql);
-		        $conn1->commit();
+
+				$sql="SELECT COUNT(*) AS count FROM THRESHOLDS";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$total_clients=$row["count"];
+				}
+
+				$sql="SELECT as_name FROM THRESHOLDS";
+        		        $result = $conn1->query($sql);
+                	        while ($row = $result->fetch_assoc()) {
+					$as_name=$row["as_name"];
+					$new_max_requests=$max_capacity/(2*$total_clients);
+				        $sql = sprintf("UPDATE THRESHOLDS SET max_filter_requests=%d,max_monitoring_requests=%d,fair_sharing=0 WHERE as_name='%s'",$new_max_requests, $new_max_requests, $as_name);
+        				$conn1->query($sql);
+		        		$conn1->commit();
+				}
+
 			echo json_encode(array(
 				"success" => true,
 				"data" => array(
-					"flip"=>$old_value
+					"fair_sharing_value"=>$new_max_requests
 				)
 			),true);
+
+
 			return;
-                }
 
     	default:
         	http_response_code(400);

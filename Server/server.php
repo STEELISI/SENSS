@@ -98,7 +98,7 @@
 <th>Controller URL</th>
 <th>Rule capacity</th>
 <th>Edit</th>
-<th>Delete</th>
+<th>Fair sharing</th>
 </tr>
 </thead>
         <tbody>
@@ -162,7 +162,7 @@
             <div class="modal-body" style="height:400px;">
                 <table class="table table-borderless">
                     <tr>
-                        <td><span id="server_form_notification"></span></td>
+                        <td><span id="edit_server_form_notification"></span></td>
                     <tr>
 
                     <tr>
@@ -212,7 +212,6 @@
 <th>Max filter requests</th>
 <th>Active monitoring requests</th>
 <th>Max monitoring requests</th>
-<th>Fair sharing</th>
 <th>Block monitoring requests</th>
 <th>Block filtering requests</th>
 <th>Edit</th>
@@ -236,6 +235,8 @@
                     <tr>
                         <td><span id="threshold_form_notification"></span></td>
                     <tr>
+
+                    <span id="as_name_holder"></span>
 
                     <tr>
                         <th>Max filter requests</th>
