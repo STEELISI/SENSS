@@ -92,11 +92,16 @@ function poll_stats() {
         }, (1* 1000)); // rule[2] is actual frequency with which the backend system will update the database/
 }
 
-function populate_values_server(as_name,controller_url,rule_capacity,random){
+function populate_values_server(as_name,controller_url,rule_capacity,revoke_all,random){
 	console.log("Populating values for constants "+as_name+" "+controller_url+" "+random);
         var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td>"+rule_capacity+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td>";
 	markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-fair-sharing-"+random+"'>Apply</button></td>";
-	makrup=markup+"</tr>";
+	if (revoke_all==0){
+		markup=markup+"<td><button type='button' class='btn btn-danger' id='revoke-all-"+random+"'>Revoke</button></td></tr>";
+	}
+	if (revoke_all==1){
+		markup=markup+"<td><button type='button' class='btn btn-danger' id='revoke-all-"+random+"'>Unrevoke</button></td></tr>";
+	}
 
         $("#log_table_server").append(markup);
 
@@ -122,7 +127,6 @@ function populate_values_server(as_name,controller_url,rule_capacity,random){
 					if (resultParsed.success==false) {
 						var markup='<div class="alert alert-danger" role="alert">'+resultParsed.reason+'</div>';
 				             	document.getElementById('edit_server_form_notification').innerHTML = "";
-
 						 $("#edit_server_form_notification").append(markup);
 					}
 					if (resultParsed.success){
@@ -149,6 +153,24 @@ function populate_values_server(as_name,controller_url,rule_capacity,random){
                 });
         });
 
+        $("#revoke-all-" + random).click(function () {
+		if (revoke_all==0){
+			var final_url= BASE_URI + "revoke_unrevoke&type=revoke"
+		}
+		if (revoke_all==1){
+			var final_url= BASE_URI + "revoke_unrevoke&type=unrevoke"
+		}
+                $.ajax({
+                        url: final_url,
+                        type: "GET",
+                        success: function (result) {
+				location.reload();
+                        }
+                });
+        });
+
+
+
 }
 
 function poll_stats_server() {
@@ -171,8 +193,9 @@ function poll_stats_server() {
                                                 var as_name=resultParsed.data[i].as_name;
                                                 var controller_url=resultParsed.data[i].controller_url;
                                                 var rule_capacity=resultParsed.data[i].rule_capacity;
-						console.log(as_name+" "+controller_url);
-                                                populate_values_server(as_name,controller_url,rule_capacity,random)
+						var revoke_all=resultParsed.data[i].revoke_all;
+						console.log(as_name+" "+controller_url+" revoked "+revoke_all);
+                                                populate_values_server(as_name,controller_url,rule_capacity,revoke_all,random)
                                         }
 					document.getElementById("server-node").disabled = true;
                                 }
@@ -200,8 +223,7 @@ function populate_values_threshold(as_name,used_filter_requests,max_filter_reque
 	if (block_filtering=="0"){
 		markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-filtering-"+random+"'>Block</button></td>";
 	}
-	markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-"+random+"'>Edit</button></td>";
-	markup=markup+"<td><button type='button' class='btn btn-danger' id='delete-all-"+random+"'>Revoke</button></td></tr>";
+	markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-"+random+"'>Edit</button></td></tr>";
         $("#threshold_table").append(markup);
 
 

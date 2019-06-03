@@ -58,13 +58,13 @@ if type=="server":
 
 
 	try:
-		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, `rule_capacity` INT NOT NULL,`fair_sharing` INT NOT NULL, PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, `rule_capacity` INT NOT NULL,`fair_sharing` INT NOT NULL, `revoke_all` INT NOT NULL, PRIMARY KEY (`id`))")
 		print "Table CONSTANTS created"
 	except Exception as e:
 		print e
 		print "Table CONSTANTS already exists"
 		cur.execute("DROP TABLE CONSTANTS")
-		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, `rule_capacity` INT NOT NULL,`fair_sharing` INT NOT NULL, PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `CONSTANTS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `controller_url` VARCHAR(250) NOT NULL, `rule_capacity` INT NOT NULL,`fair_sharing` INT NOT NULL, `revoke_all` INT NOT NULL, PRIMARY KEY (`id`))")
 		print "Table CONSTANTS created"
 
 	try:
@@ -73,7 +73,7 @@ if type=="server":
 	except:
 		print "Table THRESHOLDS already exists"
 		cur.execute("DROP TABLE THRESHOLDS")
-		cur.execute("CREATE TABLE `THRESHOLDS` (`as_name` varchar(45) NOT NULL, `used_filter_requests` INT NOT NULL, `max_filter_requests` INT NOT NULL, `used_monitoring_requests` INT NOT NULL, `max_monitoring_requests` INT NOT NULL,`block_monitoring` INT NOT NULL, `block_filtering` INT NOT NULL, `fair_sharing` INT NOT NULL,`revoke` INT NOT NULL, PRIMARY KEY (`as_name`))")
+		cur.execute("CREATE TABLE `THRESHOLDS` (`as_name` varchar(45) NOT NULL, `used_filter_requests` INT NOT NULL, `max_filter_requests` INT NOT NULL, `used_monitoring_requests` INT NOT NULL, `max_monitoring_requests` INT NOT NULL,`block_monitoring` INT NOT NULL, `block_filtering` INT NOT NULL, `fair_sharing` INT NOT NULL,`revoke` INT NOT NULL,  PRIMARY KEY (`as_name`))")
 		print "Table THRESHOLDS created"
 
 	cur.close()

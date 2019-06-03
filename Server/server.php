@@ -82,6 +82,7 @@
 <th>Rule capacity</th>
 <th>Edit</th>
 <th>Fair sharing</th>
+<th>Revoke all</th>
 </tr>
 </thead>
         <tbody>
@@ -198,7 +199,6 @@
 <th>Block monitoring requests</th>
 <th>Block filtering requests</th>
 <th>Edit</th>
-<th>Revoke</th>
 </tr>
 </thead>
         <tbody>

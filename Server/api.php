@@ -22,6 +22,15 @@ function get_count($as_name, $request_type)
 			$block_filtering=$row["block_filtering"];
         	}
     	}
+
+	$sql="SELECT revoke_all FROM CONSTANTS";
+    	$result = $conn1->query($sql);
+    	if ($result->num_rows > 0) {
+        	while ($row = $result->fetch_assoc()) {
+			$revoke_all=$row["revoke_all"];
+        	}
+    	}
+
 	if($request_type=="Add filter"){
 		$used_filter_requests=$used_filter_requests+1;
 	    	if ($used_filter_requests>$max_filter_requests){
@@ -36,12 +45,19 @@ function get_count($as_name, $request_type)
 		else{
 			$blocked=false;
 		}
+		if ($revoke_all==1){
+			$revoked=true;
+		}
+		else{
+			$revoked=false;
+		}
 
 	    	return array(
 			"threshold"=>$max_filter_requests,
 			"count"=>$used_filter_requests-1,
 			"excess_rules"=>$excess_rules,
 			"blocked"=>$blocked,
+			"revoked"=>$revoked,
 			"as_name"=>SENSS_AS
 		);
 	}
@@ -59,11 +75,19 @@ function get_count($as_name, $request_type)
 		else{
 			$blocking=false;
 		}
+		if ($revoke_all==1){
+			$revoked=true;
+		}
+		else{
+			$revoked=false;
+		}
+
 	    	return array(
 			"threshold"=>$max_monitoring_requests,
 			"count"=>$used_monitoring_requests-1,
 			"excess_rules"=>$excess_rules,
 			"blocked"=>$blocked,
+			"revoked"=>$revoked,
 			"as_name"=>SENSS_AS
 		);
 	}
@@ -179,6 +203,15 @@ switch ($action) {
                 	),true);
 	    		break;
 		}
+		if($get_count_array['revoked']){
+            		echo json_encode(array(
+                    		"success" => false,
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "All access revoked"
+                	),true);
+	    		break;
+		}
 
 
 		require_once "filter.php";
@@ -232,6 +265,15 @@ switch ($action) {
                     		"error" => 500,
 		    		"as_name" => $get_count_array['as_name'],
                     		"details" => "Blocked"
+                	),true);
+	    		break;
+		}
+		if($get_count_array['revoked']){
+            		echo json_encode(array(
+                    		"success" => false,
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "All access revoked"
                 	),true);
 	    		break;
 		}
@@ -338,6 +380,15 @@ switch ($action) {
                     		"error" => 500,
 		    		"as_name" => $get_count_array['as_name'],
                     		"details" => "Blocked"
+                	),true);
+	    		break;
+		}
+		if($get_count_array['revoked']){
+            		echo json_encode(array(
+                    		"success" => false,
+                    		"error" => 500,
+		    		"as_name" => $get_count_array['as_name'],
+                    		"details" => "All access revoked"
                 	),true);
 	    		break;
 		}
@@ -513,12 +564,12 @@ switch ($action) {
 
 	case "get_constants":
 		require_once "constants.php";
-                $sql="SELECT as_name,controller_url,rule_capacity from CONSTANTS";
+                $sql="SELECT as_name,controller_url,rule_capacity,revoke_all from CONSTANTS";
                 $result = $conn1->query($sql);
                 if ($result->num_rows > 0) {
                         $return_array=array();
                         while ($row = $result->fetch_assoc()) {
-				$temp=array("as_name"=>$row["as_name"],"controller_url"=>$row["controller_url"], "rule_capacity"=>$row["rule_capacity"]);
+				$temp=array("as_name"=>$row["as_name"],"controller_url"=>$row["controller_url"], "rule_capacity"=>$row["rule_capacity"], "revoke_all"=>$row["revoke_all"]);
 				array_push($return_array,$temp);
                         }
                         echo json_encode(array(
@@ -708,6 +759,21 @@ switch ($action) {
 
 
 			return;
+
+	case "revoke_unrevoke":
+		require_once "constants.php";
+		$type=$_GET["type"];
+		if($type=="revoke"){
+	                $sql=sprintf("UPDATE CONSTANTS SET revoke_all=1");
+        	        $conn1->query($sql);
+			$conn1->commit();
+		}
+		if($type=="unrevoke"){
+	                $sql=sprintf("UPDATE CONSTANTS SET revoke_all=0");
+        	        $conn1->query($sql);
+			$conn1->commit();
+		}
+		return;
 
     	default:
         	http_response_code(400);
