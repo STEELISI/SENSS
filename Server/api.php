@@ -148,7 +148,7 @@ switch ($action) {
 				$new_max_capacity=$max_capacity/(2*$total_clients);
 
 
-			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, block_monitoring, block_filtering, fair_sharing, revoke) VALUES('%s', %d, %d, %d, %d, %d, %d, %d, 0) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, $new_max_capacity, $monitoring_requests, $new_max_capacity, 0, 0, 0, $filtering_requests,$monitoring_requests);
+			$sql=sprintf("INSERT INTO THRESHOLDS (as_name, used_filter_requests, max_filter_requests, used_monitoring_requests, max_monitoring_requests, block_monitoring, block_filtering, fair_sharing) VALUES('%s', %d, %d, %d, %d, %d, %d, %d) ON DUPLICATE KEY UPDATE used_filter_requests=%d, used_monitoring_requests=%d", $key,$filtering_requests, $new_max_capacity, $monitoring_requests, $new_max_capacity, 0, 0, 0, $filtering_requests,$monitoring_requests);
 		    	$result = $conn1->query($sql);
 			$conn1->commit();
 		}
@@ -465,7 +465,7 @@ switch ($action) {
 		require_once "constants.php";
 	        $input = file_get_contents("php://input");
 	        $input = json_decode($input, true);
-	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url, rule_capacity, fair_sharing) VALUES ('%s', '%s', %d, %d)", $input['as_name'], $input['controller_url'], $input['rule_capacity'], $input["fair_sharing"]);
+	        $sql = sprintf("INSERT INTO CONSTANTS (as_name, controller_url, rule_capacity, fair_sharing, revoke_all) VALUES ('%s', '%s', %d, %d, 0)", $input['as_name'], $input['controller_url'], $input['rule_capacity'], $input["fair_sharing"]);
         	$conn1->query($sql);
 	        $conn1->commit();
         	return;
@@ -774,20 +774,6 @@ switch ($action) {
 			$conn1->commit();
 		}
 		return;
-	case "get_tutorial":
-		require_once "constants.php";
-		$sql="SELECT tutorial FROM CONSTANTS";
-		$result = $conn1->query($sql);
-		$return_array=array();
-		while ($row = $result->fetch_assoc()) {
-			$temp=array("tutorial"=>$row["tutorial"]);
-			array_push($return_array,$temp);
-		}
-		echo json_encode(array(
-                                "success" => true,
-                                "data" => $return_array
-                        ),true);
-                        return;
 
 
     	default:

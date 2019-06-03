@@ -418,10 +418,6 @@ if (isset($_GET['get_amon_data'])) {
 		$data_to_send[$counter]["monitor_duration"]=$monitor_duration;
 		$counter=$counter+1;
     	}
-    	if (empty($data_to_send)) {
-		echo "{}";
-		return;
-    	}
     	echo json_encode($data_to_send,true);
     	return;
 }
@@ -919,6 +915,11 @@ if(isset($_GET['get_amon'])) {
 	                ),true);
 		return;
 	}
+
+	echo json_encode(array(
+              	        "success" => true,
+                       	"data" => array()
+	               ),true);
 	return;
 }
 

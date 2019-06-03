@@ -83,12 +83,12 @@
 <table class='table table-bordered table-striped' id="log_table_server">
 <thead>
 <tr>
-<th data-intro="Displays the configured name of SENSS server.">Name</th>
-<th data-intro="Displays the configured controller URL.">Controller URL</th>
-<th data-intro="Displays the maximum rule capacity supported by the SENSS ISP.">Rule capacity</th>
-<th data-intro="Edit SENSS server configueration.">Edit</th>
+<th data-intro="Name of SENSS server.">Name</th>
+<th data-intro="Controller URL.">Controller URL</th>
+<th data-intro="Maximum rule capacity supported by the SENSS ISP.">Rule capacity</th>
+<th data-intro="Edit SENSS server configuration.">Edit</th>
 <th data-intro="Enable fair sharing. Rules are equally distributed among all active SENSS clients and manually configured rule allocation for SENSS clients are overriden.">Fair sharing</th>
-<th data-intro="Revoke/un-revoke SENSS server services to all clients.">Revoke all</th>
+<th data-intro="Revoke/un-revoke SENSS server services to all active clients.">Revoke all</th>
 </tr>
 </thead>
         <tbody>

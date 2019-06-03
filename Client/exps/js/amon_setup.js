@@ -53,6 +53,8 @@ function populate_values_server_amon(as_name,server_url,random){
                         url: BASE_URI + "get_amon",
                         type: "GET",
                         success: function (result) {
+				console.log("new results");
+				console.log(result);
                                 var resultParsed = JSON.parse(result);
 				console.log(resultParsed);
                                 if (resultParsed.success) {
@@ -73,5 +75,21 @@ function populate_values_server_amon(as_name,server_url,random){
 
 $(document).ready(function () {
         populate_values_server_amon();
+        var tutorial = localStorage.getItem("client_tutorial");
+        if (tutorial != null) {
+                tutorial = parseInt(tutorial);
+        }
+        else{
+                tutorial=0;
+        }
+        if (tutorial==0){
+                introJs().setOption('showProgress', true).start();
+                tutorial=1;
+                localStorage.setItem("client_tutorial", tutorial);
+        }
+	        var tutorial_link = document.getElementById("tutorial");
+        tutorial_link.onclick = function() {
+                introJs().setOption('showProgress', true).start();
+        }
 });
 

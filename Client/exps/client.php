@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>SENSS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/introjs.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="js/jsnetworkx.js"></script>
@@ -11,6 +12,7 @@
     <script src="js/cytoscape.min.js"></script>
     <script src="js/jquery.qtip.min.js"></script>
     <link rel="stylesheet" href="css/jquery.qtip.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/2.9.3/intro.js"><script>
     <script src="js/cytoscape-qtip.js"></script>
     <style>
 	.table-borderless > tbody > tr > td,
@@ -44,6 +46,7 @@
             <a class="navbar-brand" href="client.php">Setup</a>
             <a class="navbar-brand" href="ddos_with_sig.php">SENSS Client</a>
             <a class="navbar-brand" href="logs.php">Logs</a>
+   	   <a class="navbar-brand" id="tutorial">Tutorial</a>
         </div>
     </div>
 </nav>
@@ -51,10 +54,10 @@
 
 
 <div class="container inner-container">
-    <h2>Setup</h2>
+    <h2 data-intro="This panel configures SENSS client parameters.">Setup</h2>
     <div class="row">
     	<div class="col-sm-4">
-     		<button type="button" class="btn btn-primary btn-small" name="submit" id="client-node">Config this client</button></span></p>
+     		<button type="button" class="btn btn-primary btn-small" name="submit" id="client-node" data-intro="Click this button to configure the SENSS client.">Config this client</button></span></p>
 	</div>
     </div>
 </div>
@@ -62,9 +65,9 @@
 <table class='table table-bordered table-striped' id="log_table_client">
 <thead>
 <tr>
-<th>AS name</th>
-<th>Edit</th>
-<th>Delete</th>
+<th data-intro="Displays the client name.">Client name</th>
+<th data-intro="Edit client configuration.">Edit</th>
+<th data-intro="Delete existing configuration.">Delete</th>
 </tr>
 </thead>
         <tbody>
@@ -150,7 +153,7 @@
 <div class="container inner-container">
     <div class="row">
     	<div class="col-sm-4">
-     		<button type="button" class="btn btn-primary btn-small" name="submit" id="server-node">Config link to remote server</button></span></p>
+     		<button type="button" class="btn btn-primary btn-small" name="submit" id="server-node" data-intro="Click this button to add a collaborating SENSS server.">Config link to remote server</button></span></p>
 	</div>
     </div>
 </div>
@@ -159,10 +162,10 @@
 <table class='table table-bordered table-striped' id="log_table_server">
 <thead>
 <tr>
-<th>AS name</th>
-<th>Server URL</th>
-<th>Edit</th>
-<th>Delete</th>
+<th data-intro="AS name of the collaborating SENSS server.">AS name</th>
+<th data-intro="URL to reach the SENSS server.">Server URL</th>
+<th data-intro="Edit collaborating SENSS server parameters.">Edit</th>
+<th data-intro="Delete existing SENSS server.">Delete</th>
 
 </tr>
 </thead>
@@ -263,8 +266,8 @@
 <table class='table table-bordered table-striped' id="client_processes">
 <thead>
 <tr>
-<th>Process</th>
-<th>Start/Stop</th>
+<th data-intro="Displays the monitoring process running on SENSS client.">Process</th>
+<th data-intro="Start/stop the monitoring process.">Start/Stop</th>
 </tr>
 </thead>
         <tbody>
