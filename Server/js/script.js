@@ -100,7 +100,7 @@ function populate_values_server(as_name,controller_url,rule_capacity,revoke_all,
 		markup=markup+"<td><button type='button' class='btn btn-danger' id='revoke-all-"+random+"'>Revoke</button></td></tr>";
 	}
 	if (revoke_all==1){
-		markup=markup+"<td><button type='button' class='btn btn-danger' id='revoke-all-"+random+"'>Unrevoke</button></td></tr>";
+		markup=markup+"<td><button type='button' class='btn btn-success' id='revoke-all-"+random+"'>Unrevoke</button></td></tr>";
 	}
 
         $("#log_table_server").append(markup);
@@ -337,6 +337,18 @@ function poll_stats_threshold() {
 
 
 $(document).ready(function () {
+        var tutorial = localStorage.getItem("tutorial");
+        if (tutorial != null) {
+                tutorial = parseInt(tutorial);
+        }
+	else{
+		tutorial=0;
+	}
+	if (tutorial==0){
+		introJs().setOption('showProgress', true).start();
+		tutorial=1;
+		localStorage.setItem("tutorial", tutorial);
+	}
         poll_stats();
 	poll_stats_server();
 	poll_stats_threshold();
@@ -375,6 +387,12 @@ $(document).ready(function () {
                 	                location.reload();
 				}
         });
+
+	var tutorial_link = document.getElementById("tutorial");
+	tutorial_link.onclick = function() {
+		introJs().setOption('showProgress', true).start();
+	}
+
 
 });
 

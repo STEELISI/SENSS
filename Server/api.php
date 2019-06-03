@@ -774,6 +774,21 @@ switch ($action) {
 			$conn1->commit();
 		}
 		return;
+	case "get_tutorial":
+		require_once "constants.php";
+		$sql="SELECT tutorial FROM CONSTANTS";
+		$result = $conn1->query($sql);
+		$return_array=array();
+		while ($row = $result->fetch_assoc()) {
+			$temp=array("tutorial"=>$row["tutorial"]);
+			array_push($return_array,$temp);
+		}
+		echo json_encode(array(
+                                "success" => true,
+                                "data" => $return_array
+                        ),true);
+                        return;
+
 
     	default:
         	http_response_code(400);
