@@ -6,7 +6,6 @@ if (!isset($_GET['action'])) {
 }
 
 
-
 function get_count($as_name, $request_type)
 {
 	require_once "constants.php";
@@ -772,6 +771,25 @@ switch ($action) {
 	                $sql=sprintf("UPDATE CONSTANTS SET revoke_all=0");
         	        $conn1->query($sql);
 			$conn1->commit();
+		}
+		return;
+
+	case "upload_cert":
+		$type=$_GET['cert_type'];
+		echo "Here is the list ".$type;
+		if($type=="new"){
+			$target_dir = "/var/www/html/Server/cert/";
+			$target_file = $target_dir . basename($_FILES["file"]["name"]);
+			$file_name = $_POST["file_name"];
+			//$target_file = $target_dir . basename($_FILES["file"]["name"]);
+			$target_file = $target_dir . $file_name;
+			echo $target_file;
+			if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
+				echo "Uploaded successfully";
+			}
+			else{
+				echo "Upload failed ".$_POST["file_name"];
+			}
 		}
 		return;
 

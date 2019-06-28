@@ -86,6 +86,7 @@
 <th data-intro="Name of SENSS server.">Name</th>
 <th data-intro="Controller URL.">Controller URL</th>
 <th data-intro="Maximum rule capacity supported by the SENSS ISP.">Rule capacity</th>
+<th data-intro="Authentication type for client requests.">Auth type</th>
 <th data-intro="Edit SENSS server configuration.">Edit</th>
 <th data-intro="Enable fair sharing. Rules are equally distributed among all active SENSS clients and manually configured rule allocation for SENSS clients are overriden.">Fair sharing</th>
 <th data-intro="Revoke/un-revoke SENSS server services to all active clients.">Revoke all</th>
@@ -128,6 +129,13 @@
                     <tr>
                         <td><input type="text" id="rule_capacity" class="form-control" placeholder="1000"></td>
                     </tr>
+                    <tr>
+                        <th>Upload root cert</th>
+                    </tr>
+                    <tr>
+                          <td><input type="file" class="custom-file-input" name="server_cert" id="server_cert"></td>
+                    </tr>
+
                 </table>
             </div>
 
@@ -173,7 +181,12 @@
                     <tr>
                         <td><input type="text" id="edit_rule_capacity" class="form-control" placeholder="1000"></td>
                     </tr>
-
+                    <tr>
+                        <th>Upload root cert</th>
+                    </tr>
+                    <tr>
+                          <td><input type="file" class="custom-file-input" name="edit_server_cert" id="edit_server_cert"></td>
+                    </tr>
                 </table>
             </div>
 

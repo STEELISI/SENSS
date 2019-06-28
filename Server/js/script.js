@@ -94,7 +94,7 @@ function poll_stats() {
 
 function populate_values_server(as_name,controller_url,rule_capacity,revoke_all,random){
 	console.log("Populating values for constants "+as_name+" "+controller_url+" "+random);
-        var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td>"+rule_capacity+"</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td>";
+        var markup="<tr id='node-row-"+ random +"'><td>"+as_name+"</td><td>"+controller_url+"</td><td>"+rule_capacity+"</td><td>Certificate</td><td><button type='button' class='btn btn-primary' id='edit-node-server-" + random + "'>Edit</button></td>";
 	markup=markup+"<td><button type='button' class='btn btn-primary' id='edit-fair-sharing-"+random+"'>Apply</button></td>";
 	if (revoke_all==0){
 		markup=markup+"<td><button type='button' class='btn btn-danger' id='revoke-all-"+random+"'>Revoke</button></td></tr>";
@@ -136,6 +136,26 @@ function populate_values_server(as_name,controller_url,rule_capacity,revoke_all,
 					}
                         	}
 	                });
+			var file_data = document.getElementById("edit_server_cert").files[0];
+			console.log(file_data);
+			console.log("Ready");
+	                if (file_data!=null){
+        	                var form_data = new FormData();
+                	        form_data.append('file', file_data);
+                        	form_data.append('file_name', "rootcert1.pem");
+        	                $.ajax({
+                	                url: BASE_URI + "upload_cert&cert_type=new",
+                        	        dataType: 'text',
+                                	cache: false,
+	                                contentType: false,
+        	                        processData: false,
+                	                data: form_data,
+                        	        type: 'post',
+                                	success: function(php_script_response){
+	                                        console.log(php_script_response);
+        	                        }
+                	        });
+	                }
 		}
         });
 
@@ -383,8 +403,27 @@ $(document).ready(function () {
                         	                        console.log("SIVARAM: Added config");
                                 	        }
 	                                });
+                                	var file_data = document.getElementById("server_cert").files[0];
+	                                if (file_data!=null){
+        	                                console.log(file_data);
+                	                        var form_data = new FormData();
+                        	                form_data.append('file', file_data);
+                                	        form_data.append('file_name', "rootcert1.pem");
+                                        	$.ajax({
+	                                                url: BASE_URI + "upload_cert&cert_type=new",
+        	                                        dataType: 'text',
+                	                                cache: false,
+                        	                        contentType: false,
+                                	                processData: false,
+                                        	        data: form_data,
+                                                	type: 'post',
+	                                                success: function(php_script_response){
+        	                                                console.log(php_script_response);
+                	                                }
+                        	                });
+	                                }
         	                        $("#config-server-modal").modal('hide');
-                	                location.reload();
+                	                //location.reload();
 				}
         });
 

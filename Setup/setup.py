@@ -66,6 +66,7 @@ def copy_files(type,location):
 	if type=="server":
 		cmd="sudo cp -rf ../Server "+location
 		os.system(cmd)
+		os.system("sudo chown -R www-data /var/www/html/Server/cert")
 	if type=="client":
 		cmd="sudo cp -rf ../Client "+location
 		os.system(cmd)
