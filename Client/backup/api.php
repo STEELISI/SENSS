@@ -25,57 +25,18 @@ function generate_request_headers() {
 
 //Adding the topology
 //Add filter all used by DDoS with Signature to add filters to all monitoring nodes
-if (isset($_GET['upload_cert'])){
-	$type=$_GET['cert_type'];
-	echo "Here is the list ".$type;
-	if($type=="new"){
-		$target_dir = "/var/www/html/Client/cert/";
-		$target_file = $target_dir . basename($_FILES["file"]["name"]);
-		$file_name = $_POST["file_name"];
-		//$target_file = $target_dir . basename($_FILES["file"]["name"]);
-		$target_file = $target_dir . $file_name;
-		if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
-			echo "Uploaded successfully";
-		}
-		else{
-			echo "Upload failed ".$_POST["file_name"];
-		}
-	}
-	if($type=="replace"){
-		$target_dir = "/var/www/html/Client/cert/";
-		$target_file = $target_dir . basename($_FILES["file"]["name"]);
-		$old_target_file = $target_dir . $_POST["old_file_name"];
-		$file_name = $_POST["file_name"];
-		$target_file = $target_dir . $file_name;
-		echo "Here to check ".$old_target_file." ".file_exists($old_target_file);
-		if (file_exists($old_target_file)==1){
-			unlink($old_target_file);
-		}
-		if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
-			echo "Uploaded successfully";
-		}
-		else{
-			echo "Upload failed ".$_FILES["file_name"];
-		}
-	}
-
-	if($type=="rename"){
-		$target_dir = "/var/www/html/Client/cert/";
-		$target_file = $target_dir . basename($_FILES["file"]["name"]);
-		$old_target_file = $target_dir . $_POST["old_file_name"];
-		$file_name = $_POST["file_name"];
-		$target_file = $target_dir . $file_name;
-		if (file_exists($old_target_file)==1){
-			rename( $old_target_file, $target_file);
-		}
-	}
-
-}
 if (isset($_GET["add_topo"])){
     	$input = file_get_contents("php://input");
     	$input = json_decode($input, true);
+//if (1){
+/*	$input=array(
+		"as_name"=>"H",
+		"server_url"=>"html",
+		"links_to"=>"asdasd",
+		"self"=>1
+	);*/
 	require_once "db_conf.php";
-	$sql = sprintf("INSERT INTO AS_URLS (as_name, server_url, self) VALUES ('%s', '%s', %d)", $input['as_name'], $input['server_url'], $input['self']);
+	$sql = sprintf("INSERT INTO AS_URLS (as_name, server_url, links_to, self) VALUES ('%s', '%s', '%s', %d)", $input['as_name'], $input['server_url'], $input['links_to'], $input['self']);
 	$conn->query($sql);
 	$conn->commit();
 	return;
@@ -417,6 +378,10 @@ if (isset($_GET['get_amon_data'])) {
 		$data_to_send[$counter]["frequency"]=$frequency;
 		$data_to_send[$counter]["monitor_duration"]=$monitor_duration;
 		$counter=$counter+1;
+    	}
+    	if (empty($data_to_send)) {
+		echo "{}";
+		return;
     	}
     	echo json_encode($data_to_send,true);
     	return;
@@ -773,10 +738,12 @@ if(isset($_GET['send_proxy_info_amon'])) {
 }
 
 if(isset($_GET['get_client_logs'])) {
+//if(1){
     	if (!isset($_GET['type'])) {
         	http_response_code(400);
         	return;
     	}
+	//$type="add_monitor";
 	$type=$_GET['type'];
         require_once "db_conf.php";
 	switch($type){
@@ -808,121 +775,5 @@ if(isset($_GET['get_client_logs'])) {
         ),true);
 	return;
 }
-
-if(isset($_GET['get_setup_logs'])) {
-   	if (!isset($_GET['type'])) {
-        	http_response_code(400);
-        	return;
-    	}
-    	$type = $_GET['type'];
-        require_once "db_conf.php";
-	if($type=="client"){
-		$sql="SELECT as_name,server_url from AS_URLS WHERE self=1";
-	        $result = $conn->query($sql);
-        	if ($result->num_rows > 0) {
-	                $return_array=array();
-        	        while ($row = $result->fetch_assoc()) {
-                	        array_push($return_array,$row);
-	                }
-			echo json_encode(array(
-                	        "success" => true,
-                        	"data" => $return_array
-	                ),true);
-			return;
-        	}
-	}
-	if($type=="server"){
-		$sql="SELECT as_name,server_url from AS_URLS WHERE self=0";
-	        $result = $conn->query($sql);
-        	if ($result->num_rows > 0) {
-	                $return_array=array();
-        	        while ($row = $result->fetch_assoc()) {
-                	        array_push($return_array,$row);
-	                }
-			echo json_encode(array(
-                	        "success" => true,
-                        	"data" => $return_array
-	                ),true);
-			return;
-        	}
-	}
-        echo json_encode(array(
-                "success" => false,
-                "error" => 400
-        ),true);
-	return;
-}
-
-
-if(isset($_GET['remove_node'])) {
-   	if (!isset($_GET['as_name']) && !isset($_GET['server_url'])) {
-        	http_response_code(400);
-        	return;
-    	}
-    	$as_name = $_GET['as_name'];
-	$server_url = $_GET['server_url'];
-    	require_once "db_conf.php";
-
-    	$sql = sprintf("DELETE FROM AS_URLS WHERE  as_name='%s' AND server_url='%s'",$as_name,$server_url);
-    	$conn->query($sql);
-    	$conn->commit();
-	$target_file = "/var/www/html/Client/cert/".$as_name."_cert.pem";
-	unlink($target_file);
-	return;
-}
-
-if(isset($_GET['edit_node'])) {
-   	if (!isset($_GET['as_name']) && !isset($_GET['server_url'])) {
-        	http_response_code(400);
-        	return;
-    	}
-    	$old_as_name = $_GET['old_as_name'];
-    	$old_server_url = $_GET['old_server_url'];
-    	$as_name = $_GET['as_name'];
-	$server_url = $_GET['server_url'];
-
-    	require_once "db_conf.php";
-
-    	$sql = sprintf("UPDATE AS_URLS SET as_name='%s' WHERE as_name='%s' AND server_url='%s'",$as_name, $old_as_name,$server_url);
-    	$conn->query($sql);
-    	$conn->commit();
-	return;
-}
-
-
-if(isset($_GET['change_amon'])) {
-	$change_status=$_GET['change_status'];
-    	require_once "db_conf.php";
-	$sql = sprintf("UPDATE CLIENT_PROCESSES SET change_status=%d WHERE process_name='AMON SENSS'",$change_status);
-    	$conn->query($sql);
-    	$conn->commit();
-	return;
-}
-
-
-if(isset($_GET['get_amon'])) {
-    	require_once "db_conf.php";
-    	$sql = sprintf("SELECT process_name, status FROM CLIENT_PROCESSES");
-	$result = $conn->query($sql);
-	if ($result->num_rows > 0) {
-		$return_array=array();
-        	        while ($row = $result->fetch_assoc()) {
-                	        array_push($return_array,$row);
-	                }
-			echo json_encode(array(
-                	        "success" => true,
-                        	"data" => $return_array
-	                ),true);
-		return;
-	}
-
-	echo json_encode(array(
-              	        "success" => true,
-                       	"data" => array()
-	               ),true);
-	return;
-}
-
-
 
 

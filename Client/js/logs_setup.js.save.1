@@ -1,0 +1,51 @@
+BASE_URI = "api.php?";
+var thresholdRateMultiplier = 1;
+var threshold = 0;
+
+function poll_stats() {
+        var check_random=[];
+		var add_monitor=[];
+                $.ajax({
+                        url: BASE_URI + "get_setup_logs",
+                        type: "GET",
+                        success: function (result) {
+                                var resultParsed = JSON.parse(result);
+				console.log(resultParsed);
+                                if (resultParsed.success) {
+                                        for (var i = 0; i < resultParsed.data.length; i++) {
+						var random = Math.random().toString(36).substring(7);
+                                                 if (check_random.indexOf(random)==-1){
+                                                        check_random.push(random);
+                                                }
+						var as_name=resultParsed.data[i].as_name;
+						var server_url=resultParsed.data[i].server_url;
+						add_monitor.push([as_name,server_url]);
+                                        }
+                                }
+				console.log(add_monitor);
+				var markup="<div class='container inner-container'><h2>Monitoring rules</h2><div id='monitoring_rules'><table class='table table-bordered table-striped'>";
+				for (var i=0;i< add_monitor[key].length; i++){
+
+				}
+				/*for (const [ key, value ] of Object.entries(add_monitor)) {
+					console.log(key);
+					markup=markup+"<h3>"+key+"</h3><table class='table table-bordered table-striped'><thead><tr><th>Time</th><th>Match</th></tr></thead>";
+					for (var i=0;i< add_monitor[key].length; i++){
+                                                         markup =markup+ "<tr>" +
+                                                                "<td>"+add_monitor[key][i][1]+"</td>" +
+                                                                "<td><pre>"+JSON.stringify(JSON.parse(add_monitor[key][i][0]), undefined, 4)+"</pre></td></tr>"; 
+						}
+					markup=markup+"</table>";
+				}
+				markup=markup+"</div></div>";*/
+                                $("#table-server-logs").append(markup);
+                        }
+                });
+
+}
+
+
+$(document).ready(function () {
+        poll_stats();
+});
+

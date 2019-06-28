@@ -70,7 +70,7 @@ def copy_files(type,location):
 	if type=="client":
 		cmd="sudo cp -rf ../Client "+location
 		os.system(cmd)
-		os.system("sudo chown -R www-data /var/www/html/Client/exps/cert")
+		os.system("sudo chown -R www-data /var/www/html/Client/cert")
 
 def install_dependencies():
 	cmd="sh ./install_dependencies.sh"
@@ -117,7 +117,7 @@ def configure_nodes():
 
 
 	if type=="client":
-		print "Open SENSS client at Client/exps/client.php"
+		print "Open SENSS client at Client/client.php"
 	if type=="server":
 		print "Open SENSS server at Server/server.php"
 if __name__ == '__main__':
