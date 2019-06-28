@@ -85,7 +85,7 @@
 <tr>
 <th data-intro="Name of SENSS server.">Name</th>
 <th data-intro="Controller URL.">Controller URL</th>
-<th data-intro="Maximum rule capacity supported by the SENSS ISP.">Rule capacity</th>
+<th data-intro="Maximum rule capacity supported by the SENSS ISP across all clients.">Rule capacity</th>
 <th data-intro="Authentication type for client requests.">Auth type</th>
 <th data-intro="Edit SENSS server configuration.">Edit</th>
 <th data-intro="Enable fair sharing. Rules are equally distributed among all active SENSS clients and manually configured rule allocation for SENSS clients are overriden.">Fair sharing</th>

@@ -423,7 +423,7 @@ $(document).ready(function () {
                         	                });
 	                                }
         	                        $("#config-server-modal").modal('hide');
-                	                //location.reload();
+                	                location.reload();
 				}
         });
 
