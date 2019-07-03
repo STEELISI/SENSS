@@ -61,8 +61,15 @@
     <div class="col-md-2">
         <p>
             <button type="button" class="btn btn-default" id="add-monitoring-rule">Add Monitoring Rule</button>
+	</p>
+	<p>
             <button type="button" class="btn btn-default" id="add-filter-all">Add filter all</button>
+	</p>
+	<p>
             <button type="button" class="btn btn-default" id="remove-filter-all">Remove filter all</button>
+	</p>
+	<p>
+            <button type="button" class="btn btn-danger" id="remove-all">Revoke all</button>
         </p>
     </div>
     <table id="table-monitor" class="table table-bordered table-striped">

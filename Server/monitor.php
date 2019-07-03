@@ -93,6 +93,7 @@ function add_monitor($client_info, $data)
     	);
 }
 
+//This is where you remove all the monitoring rules
 function remove_monitor($client_info, $monitor_id)
 {
 	require_once "db.php";

@@ -1,4 +1,3 @@
-
 var threshold = 0;
 var sum_array={"hpc039":{},"hpc041":{},"hpc042":{},"hpc043":{},"hpc044":{},"hpc046":{},"hpc047":{},"hpc048":{},"hpc049":{},"hpc050":{},"hpc052":{},"hpc054":{},"hpc056":{},"hpc057":{}}
 var monitor_ids={};
@@ -195,6 +194,19 @@ $(document).ready(function () {
         $("#remove-filter-all").click(function () {
                 var xhttp = new XMLHttpRequest();
                 xhttp.open("GET", BASE_URI+"remove_filter_all", true);
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send();
+        });
+
+	//Revokes all filters
+        $("#remove-all").click(function () {
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", BASE_URI+"remove_all", true);
+                xhttp.setRequestHeader("Content-type", "application/json");
+                xhttp.send();
+
+                var xhttp = new XMLHttpRequest();
+                xhttp.open("GET", BASE_URI+"revoke_all", true);
                 xhttp.setRequestHeader("Content-type", "application/json");
                 xhttp.send();
         });

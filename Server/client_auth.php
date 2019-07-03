@@ -114,3 +114,27 @@ function client_auth($headers) {
         	'as_domain' => get_domain($cert_content['subject']['CN'])
     	);
 }
+
+
+//function return_client_signature($headers) {
+function return_client_signature() {
+    	/*if (!isset($headers['X-Client-Cert'])) {
+        	http_response_code(400);
+		return 10;
+        	return false;
+    	}
+
+    	$client_cert = $headers['X-Client-Cert'];*/
+
+    	$client_cert = file_get_contents('/var/www/html/Client/cert/clientcert.pem');
+    	//$client_cert = base64_decode($client_cert);
+    	set_include_path(get_include_path() . PATH_SEPARATOR . 'phpseclib');
+    	include('File/X509.php');
+    	$x509 = new File_X509();
+    	$client_cert=$x509->loadX509($client_cert);
+	$signature=$client_cert['signature'];
+    	return array(
+        	'signature' => $signature
+    	);
+}
+

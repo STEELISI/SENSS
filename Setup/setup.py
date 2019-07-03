@@ -71,6 +71,9 @@ def copy_files(type,location):
 		cmd="sudo cp -rf ../Client "+location
 		os.system(cmd)
 		os.system("sudo chown -R www-data /var/www/html/Client/cert")
+	if type=="proxy":
+		cmd="sudo cp -rf ../Proxy "+location
+		os.system(cmd)
 
 def install_dependencies():
 	cmd="sh ./install_dependencies.sh"
@@ -88,7 +91,7 @@ def print_data(data):
 		print item.strip()
 
 def configure_nodes():
-	type=raw_input("Setup for? (client or server): ")
+	type=raw_input("Setup for? (client or server or proxy): ")
 	type=type.strip()
 
 	location=raw_input("Enter location of web server: ")

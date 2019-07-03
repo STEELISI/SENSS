@@ -178,6 +178,8 @@ if (isset($_GET["add_filter_alpha"])){
     	return;
 }
 
+
+
 //Add filter all used by DDoS with Signature to add filters to all monitoring nodes
 if (isset($_GET["add_filter_all"])){
 	require_once "db_conf.php";
@@ -293,6 +295,7 @@ if (isset($_GET["remove_filter_all"])){
     	echo json_encode($responses, true);
     	return;
 }
+
 
 //Adds a new monitoring by sending request to the SENSS server
 if (isset($_GET['add_monitor'])) {
@@ -924,5 +927,81 @@ if(isset($_GET['get_amon'])) {
 }
 
 
+if (isset($_GET["remove_all"])){
+	//Removing all filters
+    	require_once "db_conf.php";
+    	$sql = "SELECT as_name,monitor_id FROM MONITORING_RULES";
+    	$result = $conn->query($sql);
+    	$removed_filters=array();
+    	$success_as_name_id=array();
+    	$failed_as_name_id=array();
+    	while ($row = $result->fetch_assoc()) {
+        	$as_name=$row["as_name"];
+        	$monitor_id=$row["monitor_id"];
+        	$sql = "SELECT server_url FROM AS_URLS WHERE as_name = '" . $as_name . "'";
+        	$result_1 = $conn->query($sql);
+        	$senss_server_url = $result_1->fetch_assoc()["server_url"];
+        	$url = $senss_server_url . "?action=remove_filter&monitor_id=" . $monitor_id;
+        	$options = array(
+                	'http' => array(
+                	'method' => 'GET',
+                	'header' => generate_request_headers()
+                	)
+        	);
+        	$context = stream_context_create($options);
+        	$response = file_get_contents($url, false, $context);
+		echo "Response ".$response."\n";
+		$response=json_decode($response,true);
+        	$httpcode = http_response_code();
+       	 	http_response_code($httpcode);
+
+		if ($response["success"]){
+	        	array_push($removed_filters,$as_name);
+            		array_push($success_as_name_id, array(
+                		"as_name" => $response["as_name"])
+            		);
+		}
+		else{
+            		array_push($failed_as_name_id, array(
+                		"as_name" => $response["as_name"],
+				"error" => $response["error"],
+				"details" => $response["details"])
+            		);
+		}
+	    	$senss_server_url = $result->fetch_assoc()["server_url"];
+     		$url = $senss_server_url . "?action=remove_monitor&monitor_id=" . $monitor_id;
+	    	$options = array(
+        		'http' => array(
+            		'method' => 'GET',
+	            	'header' => generate_request_headers()
+        		)
+	    	);
+	    	$context = stream_context_create($options);
+	    	$sql = sprintf("DELETE FROM MONITORING_RULES WHERE monitor_id=%d ",$monitor_id);
+	    	$conn->query($sql);
+    		$conn->commit();
+    	}
+
+    	$responses=array();
+    	$responses["sucess"] = $success_as_name_id;
+    	$responses["failed"] = $failed_as_name_id;
+    	echo json_encode($responses, true);
+    	return;
+}
 
 
+if(isset($_GET['revoke_all'])) {
+    	$sql = "SELECT as_name, server_url FROM AS_URLS";
+    	$result = $conn->query($sql);
+    	while ($row = $result->fetch_assoc()) {
+		$url = $row['server_url'] . "?action=revoke_all";
+	        $options = array(
+        	        'http' => array(
+                	'method' => 'GET',
+	                'header' => generate_request_headers()
+        	        )
+	        );
+        	$context = stream_context_create($options);
+    	}
+	return;
+}

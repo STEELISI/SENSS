@@ -76,6 +76,14 @@ if type=="server":
 		cur.execute("CREATE TABLE `THRESHOLDS` (`as_name` varchar(45) NOT NULL, `used_filter_requests` INT NOT NULL, `max_filter_requests` INT NOT NULL, `used_monitoring_requests` INT NOT NULL, `max_monitoring_requests` INT NOT NULL,`block_monitoring` INT NOT NULL, `block_filtering` INT NOT NULL, `fair_sharing` INT NOT NULL,  PRIMARY KEY (`as_name`))")
 		print "Table THRESHOLDS created"
 
+	try:
+		cur.execute("CREATE TABLE `BLACKLIST` (`id` int(11) NOT NULL AUTO_INCREMENT, `signature` varchar(2500) NOT NULL, PRIMARY KEY(`id`))")
+		print "Table BLACKLIST created"
+	except:
+		print "Table BLACKLIST already exists"
+		cur.execute("DROP TABLE BLACKLIST")
+		cur.execute("CREATE TABLE `BLACKLIST` (`id` int(11) NOT NULL AUTO_INCREMENT, `signature` varchar(2500) NOT NULL, PRIMARY KEY(`id`))")
+		print "Table BLACKLIST created"
 	cur.close()
 	cur=db.cursor()
 
@@ -120,25 +128,25 @@ if type=="client":
 	db.commit()
 
 	try:
-		cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text, PRIMARY KEY (`id`))")
 		print "Table MONITORING_RULES created"
 	except Exception as e:
 		print e
 		print "Table MONITORING_RULES already exists"
 		cur.execute("DROP TABLE MONITORING_RULES")
-		cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text,  PRIMARY KEY (`id`))")
+		cur.execute("CREATE TABLE `MONITORING_RULES` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `end_time` int(15) DEFAULT 0, `monitor_id` bigint(20) DEFAULT 0,`type` text,`message` text, PRIMARY KEY (`id`))")
 		print "Table MONITORING_RULES created"
 
 
 	try:
 		cur.execute("CREATE TABLE `AMON_SENSS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `monitor_duration` int(15) DEFAULT 0,`type` text, PRIMARY KEY (`id`))")
-		print "Table MONITORING_RULES created"
+		print "Table AMON_SENSS created"
 	except Exception as e:
 		print e
-		print "Table MONITORING_RULES already exists"
+		print "Table AMON_SENSS already exists"
 		cur.execute("DROP TABLE AMON_SENSS")
 		cur.execute("CREATE TABLE `AMON_SENSS` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, `match_field` text, `frequency` int(5) DEFAULT 0, `monitor_duration` int(15) DEFAULT 0,`type` text, PRIMARY KEY (`id`))")
-		print "Table MONITORING_RULES created"
+		print "Table AMON_SENSS created"
 
 	try:
 		cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `time` varchar(45) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL, speed varchar(2500) DEFAULT NULL,monitor_id int(5), PRIMARY KEY (`id`))")

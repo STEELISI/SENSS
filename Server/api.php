@@ -1,11 +1,14 @@
 <?php
 
-if (!isset($_GET['action'])) {
-    	http_response_code(400);
-    	return;
+function check_blacklist($signature){
+	require_once "constants.php";
+	$sql = sprintf("SELECT * FROM BLACKLIST WHERE signature='%s'",$signature);
+    	$result = $conn1->query($sql);
+    	if ($result->num_rows > 0) {
+		return true;
+	}
+	return false;
 }
-
-
 function get_count($as_name, $request_type)
 {
 	require_once "constants.php";
@@ -94,8 +97,29 @@ function get_count($as_name, $request_type)
 
 
 
+if (!isset($_GET['action'])) {
+    	http_response_code(400);
+    	return;
+}
+
 $action = $_GET['action'];
 switch ($action) {
+	case "checking":
+		require_once "client_auth.php";
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
+	case "revoke_all":
+		require_once "client_auth.php";
+		$signature = return_client_signature();
+		require_once "constants.php";
+		$sql=sprintf("INSERT INTO BLACKLIST (signature) VALUES('%s')", $signature);
+    		$result = $conn1->query($sql);
+		db.commit();
+
 	case "update_threshold":
 		require_once "db.php";
 	    	$sql="SELECT as_name,request_type,COUNT(request_type) AS count_request_type,end_time from SERVER_LOGS WHERE  request_type='Add filter' OR (request_type='Add monitor' AND ".time()."<end_time) OR request_type='Remove filter' GROUP BY as_name,request_type";
@@ -174,6 +198,13 @@ switch ($action) {
     	case "add_filter_alpha":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
+
 
 		if (!$client_info) {
 		    	http_response_code(400);
@@ -238,6 +269,12 @@ switch ($action) {
     	case "add_filter":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
 
 		if (!$client_info) {
 		    	http_response_code(400);
@@ -315,6 +352,13 @@ switch ($action) {
     	case "remove_filter":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
+
 
 		if (!$client_info) {
 		    	http_response_code(400);
@@ -354,6 +398,13 @@ switch ($action) {
     	case "add_monitor":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
+
 
 		if (!$client_info) {
 		    	http_response_code(400);
@@ -403,6 +454,13 @@ switch ($action) {
     	case "remove_monitor":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
+
 
 		if (!$client_info) {
 		    	http_response_code(400);
@@ -432,6 +490,13 @@ switch ($action) {
     	case "get_monitor":
 		require_once "client_auth.php";
 		$client_info = client_auth(apache_request_headers());
+		$signature = return_client_signature();
+		$valid_signature=check_blacklist($signature["signature"]);
+		if (!$valid_signature){
+			http_response_code(400);
+			return;
+		}
+
 
 		if (!$client_info) {
 		    	http_response_code(400);
