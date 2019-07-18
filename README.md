@@ -24,10 +24,7 @@ The setup will prompt for:
 
 <h2> Publication </h2>
 
-#### SENSS Against Volumetric DDoS Attacks
-
-Sivaramakrishnan Ramanathan, Jelena Mirkovic, Minlan Yu and Ying Zhang
-
-Annual Computer Security Applications Conference (ACSAC)
-
+#### SENSS Against Volumetric DDoS Attacks  
+*Sivaramakrishnan Ramanathan, Jelena Mirkovic, Minlan Yu and Ying Zhang*    
+Annual Computer Security Applications Conference (ACSAC 2018)  
 [Paper](https://steel.isi.edu/members/sivaram/papers/senss.pdf) [Slides](https://steel.isi.edu/members/sivaram/slides/SENSS_ACSAC.pdf) [Bibtex](https://steel.isi.edu/members/sivaram/bib/senss.bib)
