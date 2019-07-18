@@ -9,10 +9,10 @@ Requirements for running SENSS Client
 - apache2
 - php5, ensure that the file_upload flag is set to 1 in php.ini file. 
 
-```python setup.py```
+```sudo python setup.py```
 
 The setup will prompt for:
-- type of installation which can be either for client or server
+- type of installation which can be either for client, server or proxy
 - mysqldb password
 - root password (required to install dependencies and access the apache2 files)
 
