@@ -1,30 +1,22 @@
-<h2> SENSS </h2>
+<h2> BLAG </h2>
 
-SENSS - software-defined security service is a framework that enables a victim network to request services from remote ISPs for traffic that carries source IPs or destination IPs from this net work's address space. These services range from statistics gathering, to filtering or quality of service guarantees, to route reports or modifications. The SENSS service has very simple, yet powerful, interfaces. This enables it to handle a variety of data plane and control plane attacks, while being easily implementable in today's ISP. Through extensive evaluations on realistic traffic traces and Internet topology, we show how SENSS can be used to quickly, safely and effectively mitigate a variety of large-scale attacks that are largely unhandled today. 
+Blacklists contain identities of known offenders and can be used to preventively filter unwanted traffic. Yet, any single blacklist may only be effective for a given type of attack and only over certain portions of address space. Further, each blacklist is compiled and updated using proprietary methods, and thus may have stale information or it may be slow to include new offenders, leading to false positives or false negatives. Finally, blacklists contain addresses of offenders, which lowers their accuracy in networks where there is dynamic addressing. BLAG is a sophisticated approach to select and aggregate only the accurate pieces of information from multiple blacklists. BLAG calculates information about accuracy of each blacklist over regions of address space, and uses recommender systems to select most reputable and accurate pieces of information to aggregate into its master blacklist.
 
-![Output sample](https://github.com/STEELISI/SENSS/raw/master/doc/senss.gif)
+![Output sample](https://github.com/STEELISI/SENSS/raw/master/doc/blag_main.png)
 
-<h2> Setup </h2>
+<h2> Download blacklists </h2>
 
-```git pull https://github.com/STEELISI/SENSS.git```
+``` python download.py```
 
-```cd SENSS/Setup```
+The script will prompt for location to store the blacklists. 
 
-Requirements for running SENSS Client
-- mysqldb
-- apache2
-- php5, ensure that the file_upload flag is set to 1 in php.ini file. 
+<h2> Running recommendation system </h2>
 
-```sudo python setup.py```
+``` python run_recommender.py ```
 
-The setup will prompt for:
-- type of installation which can be either for client, server or proxy
-- mysqldb password
-- root password (required to install dependencies and access the apache2 files)
+<h2> Poster </h2>
 
-<h2> Publication </h2>
-
-#### SENSS Against Volumetric DDoS Attacks  
-*Sivaramakrishnan Ramanathan, Jelena Mirkovic, Minlan Yu and Ying Zhang*    
-Annual Computer Security Applications Conference (ACSAC 2018)  
-[Paper](https://steel.isi.edu/members/sivaram/papers/senss.pdf) [Slides](https://steel.isi.edu/members/sivaram/slides/SENSS_ACSAC.pdf) [Bibtex](https://steel.isi.edu/members/sivaram/bib/senss.bib)
+#### Blacklists Assemble - Aggregating Blacklists for Accuracy   
+*Sivaramakrishnan Ramanathan, Jelena Mirkovic and Minlan Yu *    
+The Network and Distributed System Security Symposium (NDSS 2019)  
+[Poster](https://www.ndss-symposium.org/wp-content/uploads/2019/02/ndss2019posters_paper_34.pdf) 
