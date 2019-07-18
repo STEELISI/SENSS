@@ -22,3 +22,9 @@ The setup will prompt for:
 - mysqldb password
 - root password (required to install dependencies and access the apache2 files)
 
+<h2> Publication </h2>
+
+SENSS Against Volumetric DDoS Attacks
+Sivaramakrishnan Ramanathan, Jelena Mirkovic, Minlan Yu and Ying Zhang
+Annual Computer Security Applications Conference (ACSAC)
+[Paper](https://steel.isi.edu/members/sivaram/papers/senss.pdf) [Slides](https://steel.isi.edu/members/sivaram/slides/SENSS_ACSAC.pdf) [Bibtex](https://steel.isi.edu/members/sivaram/bib/senss.bib)
