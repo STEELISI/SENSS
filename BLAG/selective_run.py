@@ -1,7 +1,7 @@
 import sys
 import json 
 from selective_generate_prefix_data import generate_prefix_data 
-from new_matrix import run_recommender 
+from run_recommender import run_recommender 
 from blacklist_support import parser,send_mail 
 import multiprocessing 
 import time 
@@ -44,7 +44,6 @@ def listener(queue,date,type,dataset,to_avoid):
 	#fbl.flush()
 	#fbl.close()
 
-#damn i take the max of the scores
 def run_process(ip_16,reference_end_time,date,queue,dataset,send_accuracy_scores,avoid_blacklists,to_avoid):
 	#generate_prefix_data(current_prefix,reference_end_time,date,output_folder,dataset,accuracy_scores)
 	hf_array,f_array,h_array,ip_blacklist_map=generate_prefix_data(ip_16,reference_end_time,date,"../../Results6",dataset,send_accuracy_scores,avoid_blacklists)

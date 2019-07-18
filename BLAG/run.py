@@ -1,6 +1,6 @@
 import json 
 from generate_prefix_data import generate_prefix_data 
-from new_matrix import run_recommender 
+from run_recommender import run_recommender 
 from blacklist_support import parser,send_mail 
 import multiprocessing 
 import time 
