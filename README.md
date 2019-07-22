@@ -10,11 +10,11 @@ SENSS - software-defined security service is a framework that enables a victim n
 
 ```cd SENSS/Setup```
 
-Requirements for running SENSS Client
+Requirements for running SENSS Client/Server/Proxy
 - mysqldb
 - apache2
 - php5, ensure that the file_upload flag is set to 1 in php.ini file. 
-
+- ensure ONLY_FULL_GROUP_BY is disabled: Read [here](https://stackoverflow.com/a/37248560)  
 ```sudo python setup.py```
 
 The setup will prompt for:

@@ -63,7 +63,7 @@ $(document).ready(function () {
 					});
 				}
 				$("#config-proxy-modal").modal('hide');
-				//location.reload();
+				location.reload();
 			}
         });
 
