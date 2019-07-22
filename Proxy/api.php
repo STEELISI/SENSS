@@ -18,19 +18,19 @@ function makeRandomString($bits = 256) {
     return $return;
 }
 
-require_once "client_auth.php";
-//print_r(apache_request_headers());
-$client_info = client_auth(apache_request_headers());
-if (!$client_info) {
-        http_response_code(400);
-        return;
-}
 
 
 $action = $_GET['action'];
 //$action="get_nonce";
 switch ($action) {
     case "get_nonce":
+	require_once "client_auth.php";
+	$client_info = client_auth(apache_request_headers());
+	if (!$client_info) {
+        	http_response_code(400);
+	        return;
+	}
+
 	$id = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
 	$nonce = hash('sha512', makeRandomString());
 	$servername = "localhost";
@@ -57,7 +57,111 @@ switch ($action) {
 	echo $nonce;
 	return;
 
+
+    case "upload_cert":
+        $type=$_GET['cert_type'];
+        echo "Here is the list ".$type;
+        if($type=="new"){
+                $target_dir = "/var/www/html/Proxy/cert/";
+                $target_file = $target_dir . basename($_FILES["file"]["name"]);
+                $file_name = $_POST["file_name"];
+                //$target_file = $target_dir . basename($_FILES["file"]["name"]);
+                $target_file = $target_dir . $file_name;
+                if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
+                        echo "Uploaded successfully";
+                }
+                else{
+                        echo "Upload failed ".$_POST["file_name"];
+                }
+        }
+        if($type=="replace"){
+                $target_dir = "/var/www/html/Proxy/cert/";
+                $target_file = $target_dir . basename($_FILES["file"]["name"]);
+                $old_target_file = $target_dir . $_POST["old_file_name"];
+                $file_name = $_POST["file_name"];
+                $target_file = $target_dir . $file_name;
+                echo "Here to check ".$old_target_file." ".file_exists($old_target_file);
+                if (file_exists($old_target_file)==1){
+                        unlink($old_target_file);
+                }
+                if(move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)){
+                        echo "Uploaded successfully";
+                }
+                else{
+                        echo "Upload failed ".$_FILES["file_name"];
+                }
+        }
+
+        if($type=="rename"){
+                $target_dir = "/var/www/html/Proxy/cert/";
+                $target_file = $target_dir . basename($_FILES["file"]["name"]);
+                $old_target_file = $target_dir . $_POST["old_file_name"];
+                $file_name = $_POST["file_name"];
+                $target_file = $target_dir . $file_name;
+                if (file_exists($old_target_file)==1){
+                        rename( $old_target_file, $target_file);
+                }
+        }
+	return;
+    case "add_topo":
+        $input = file_get_contents("php://input");
+        $input = json_decode($input, true);
+        require_once "db_conf.php";
+        $sql = sprintf("INSERT INTO PROXY_INFO (as_name) VALUES ('%s')", $input['as_name']);
+        $conn->query($sql);
+        $conn->commit();
+        return;
+
+    case "get_setup_logs":
+        require_once "db_conf.php";
+                $sql="SELECT as_name from PROXY_INFO";
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) {
+                        $return_array=array();
+                        while ($row = $result->fetch_assoc()) {
+                                array_push($return_array,$row);
+                        }
+                        echo json_encode(array(
+                                "success" => true,
+                                "data" => $return_array
+                        ),true);
+                        return;
+                }
+        echo json_encode(array(
+                "success" => false,
+                "error" => 400
+        ),true);
+
+        return;
+
+
+    case "remove_node":
+        $as_name = $_GET['as_name'];
+        require_once "db_conf.php";
+        $sql = sprintf("DELETE FROM PROXY_INFO WHERE  as_name='%s'",$as_name);
+        $conn->query($sql);
+        $conn->commit();
+        $target_file = "/var/www/html/Proxy/cert/".$as_name."_cert.pem";
+        unlink($target_file);
+        return;
+
+    case "edit_node":
+        $old_as_name = $_GET['old_as_name'];
+        $as_name = $_GET['as_name'];
+        require_once "db_conf.php";
+        $sql = sprintf("UPDATE PROXY_INFO SET as_name='%s' WHERE as_name='%s'",$as_name, $old_as_name);
+        $conn->query($sql);
+        $conn->commit();
+        return;
+
     case "proxy_info":
+	require_once "client_auth.php";
+	$client_info = client_auth(apache_request_headers());
+	if (!$client_info) {
+        	http_response_code(400);
+	        return;
+	}
+
 	$id = $_SERVER['HTTP_CLIENT_IP'] ? $_SERVER['HTTP_CLIENT_IP'] : ($_SERVER['HTTP_X_FORWARDED_FOR'] ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
 	$servername = "localhost";
 	$username = "root";
@@ -135,5 +239,8 @@ switch ($action) {
         		),true);
 			return;
 	}
+
 }
+
 ?>
+

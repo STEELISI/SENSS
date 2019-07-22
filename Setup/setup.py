@@ -74,6 +74,8 @@ def copy_files(type,location):
 	if type=="proxy":
 		cmd="sudo cp -rf ../Proxy "+location
 		os.system(cmd)
+		os.system("sudo chown -R www-data /var/www/html/Client/cert")
+
 
 def install_dependencies():
 	cmd="sh ./install_dependencies.sh"

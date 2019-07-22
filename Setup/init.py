@@ -157,6 +157,8 @@ if type=="client":
 		cur.execute("DROP TABLE CLIENT_LOGS")
 		cur.execute("CREATE TABLE `CLIENT_LOGS` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `request_type` varchar(45) NOT NULL,`as_name` varchar(45) NOT NULL, `match_field` text, `packet_count` bigint(20) DEFAULT NULL, `time` varchar(45) DEFAULT 0,`byte_count` bigint(20) DEFAULT NULL, speed varchar(2500) DEFAULT NULL,monitor_id int(5), PRIMARY KEY (`id`))")
 		print "Table CLIENT_LOGS created"
+
+if type=="proxy":
 	try:
 		cur.execute("CREATE DATABASE SENSS_PROXY")
 		print "Database SENSS_PROXY created"
@@ -173,3 +175,15 @@ if type=="client":
 		cur.execute("DROP TABLE NONCES")
 		cur.execute("CREATE TABLE `NONCES` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `ip` text NOT NULL, `nonce` text NOT NULL, PRIMARY KEY (`id`))")
 		print "Table NONCES created"
+
+	try:
+		cur.execute("CREATE TABLE `PROXY_INFO` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, PRIMARY KEY (`id`))")
+		print "Table PROXY_INFO created"
+	except Exception as e:
+		print e
+		print "Table PROXY_INFO already exists"
+		cur.execute("DROP TABLE PROXY_INFO")
+		cur.execute("CREATE TABLE `PROXY_INFO` (`id` int(11) NOT NULL AUTO_INCREMENT, `as_name` varchar(45) NOT NULL, PRIMARY KEY (`id`))")
+		print "Table PROXY_INFO created"
+
+
